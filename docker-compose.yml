@@ -1,0 +1,84 @@
+version: '3.1'
+name: RSOI_CP
+
+services:
+  pg_db:
+    image: postgres:16-alpine
+    container_name: pg_db
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./pg_data_db:/var/lib/postgresql/data
+      - ./db_sql/:/docker-entrypoint-initdb.d/
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  library_service:
+    image: library_service
+    container_name: library_service
+    build:
+      context: "."
+      dockerfile: ./docker/library.Dockerfile
+    ports:
+      - "8060:8060"
+    networks:
+      - default
+    depends_on:
+      pg_db:
+        condition: service_healthy
+
+  rating_service:
+    image: rating_service
+    container_name: rating_service
+    build:
+      context: "."
+      dockerfile: ./docker/rating.Dockerfile
+    ports:
+      - "8050:8050"
+    networks:
+      - default
+    depends_on:
+      pg_db:
+        condition: service_healthy
+
+  reservation_service:
+    image: reservation_service
+    container_name: reservation_service
+    build:
+      context: "."
+      dockerfile: ./docker/reservation.Dockerfile
+    ports:
+      - "8070:8070"
+    networks:
+      - default
+    depends_on:
+      pg_db:
+        condition: service_healthy
+
+  gateway_service:
+    image: gateway_service
+    container_name: gateway_service
+    build:
+      context: "."
+      dockerfile: ./docker/gateway.Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+
+
+volumes:
+  pg_data:
+    driver: local
+
+networks:
+  default:
