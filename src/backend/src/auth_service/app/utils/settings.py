@@ -1,64 +1,60 @@
+import json
+from typing import Annotated
+import jsonpickle
+from pydantic import BaseModel
 from yaml import safe_load
 from consts import *
 
 CONFIG_PATH = "config.yaml"
 
 
-class ServiceSettings:
-  host = None
-  port = None
-  log_level = None
-  reload = None
+class ServiceSettings(BaseModel):
+  host: str = None
+  port: int = None
+  log_level: str = None
+  reload: bool = None
 
 
-class DatabaseSettings:
-  user = None
-  password = None
-  host = None
-  port = None
-  db_name = None
+class DatabaseSettings(BaseModel):
+  user: str = None
+  password: str = None
+  host: str = None
+  port: int = None
+  db_name: str = None
+  
+  
+class SettingOptions(BaseModel):
+  service: ServiceSettings = ServiceSettings()
+  database: DatabaseSettings = DatabaseSettings()
 
 
-class Settings:
-  service: ServiceSettings = ServiceSettings
-  database: DatabaseSettings = DatabaseSettings
+class Settings():
+  options: SettingOptions = SettingOptions()
 
-  @staticmethod
-  def log():
-     print(f"Setted settings:\
-           \n- Service:\
-           \n--- {HOST}={Settings.service.host}\
-           \n--- {PORT}={Settings.service.port}\
-           \n--- {LOG_LEVEL}={Settings.service.log_level}\
-           \n--- {RELOAD}={Settings.service.reload}\
-           \n- Database:\
-           \n--- {HOST}={Settings.database.host}\
-           \n--- {PORT}={Settings.database.port}\
-           \n--- {USER}={Settings.database.user}\
-           \n--- {PASSWORD}={Settings.database.password}\
-           \n--- {DB_NAME}={Settings.database.db_name}\
-           ")
-
-  @staticmethod
-  def set(config_name: str=CONFIG_PATH):
+  def __init__(self, config_name: str=CONFIG_PATH):
     with open(config_name, 'r') as f:
-        data = safe_load(f)
+      data = safe_load(f)
 
     try:
       currentServiceData = data[SERVICES][AUTH]
-      Settings.service.host = currentServiceData[HOST]
-      Settings.service.port = currentServiceData[PORT]
-      Settings.service.log_level = currentServiceData[LOG_LEVEL]
-      Settings.service.reload = currentServiceData[RELOAD]
+      Settings.options.service.host = currentServiceData[HOST]
+      Settings.options.service.port = currentServiceData[PORT]
+      Settings.options.service.log_level = currentServiceData[LOG_LEVEL]
+      Settings.options.service.reload = currentServiceData[RELOAD]
 
       currentDatabaseData = data[DATABASES][AUTH+DB_SUFFIX]
-      Settings.database.user = currentDatabaseData[USER]
-      Settings.database.password = currentDatabaseData[PASSWORD]
-      Settings.database.host = currentDatabaseData[HOST]
-      Settings.database.port = currentDatabaseData[PORT]
-      Settings.database.db_name = currentDatabaseData[DB_NAME]
-      
+      Settings.options.database.user = currentDatabaseData[USER]
+      Settings.options.database.password = currentDatabaseData[PASSWORD]
+      Settings.options.database.host = currentDatabaseData[HOST]
+      Settings.options.database.port = currentDatabaseData[PORT]
+      Settings.options.database.db_name = currentDatabaseData[DB_NAME]
     except KeyError as e:
       print(f"SETTINGS: no argument {e}")
     else:
-      Settings.log()
+      Settings.__log()
+      
+  def __log():
+    print(f"\n{Settings.options.model_dump_json(indent=2)}\n")
+    
+    
+settings = Settings() # TODO: 2 раза при первом запуске

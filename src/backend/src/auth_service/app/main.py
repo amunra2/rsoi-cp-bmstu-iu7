@@ -3,13 +3,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
 
-from utils.settings import Settings
-# from routers.api import router as api_router
-# from exceptions.handlers import (
-#   http_exception_handler,
-#   request_validation_exception_handler,
-# )
-
+from utils.database import create_tables
+from exceptions.handlers import http_exception_handler, request_validation_exception_handler
+from utils.settings import settings
+from controller.api import controller as api_contoller
 
 def custom_openapi():
   if not app.openapi_schema:
@@ -36,31 +33,28 @@ def custom_openapi():
 
   return app.openapi_schema
 
+create_tables()
 
 app = FastAPI(
   title="Auth Service",
   version="v1",
 )
-# app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_contoller, prefix="/api/v1")
 app.openapi = custom_openapi
 
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request, exc):
+  return await http_exception_handler(request, exc)
 
-# @app.exception_handler(HTTPException)
-# async def custom_http_exception_handler(request, exc):
-#   return await http_exception_handler(request, exc)
-
-
-# @app.exception_handler(RequestValidationError)
-# async def custom_validation_exception_handler(request, exp):
-#   return await request_validation_exception_handler(request, exp)
-
+@app.exception_handler(RequestValidationError)
+async def custom_validation_exception_handler(request, exp):
+  return await request_validation_exception_handler(request, exp)
 
 if __name__ == "__main__":
-  Settings.set()
   uvicorn.run(
     "main:app",
-    host=Settings.service.host,
-    port=Settings.service.port,
-    log_level=Settings.service.log_level,
-    reload=Settings.service.reload,
+    host=settings.options.service.host,
+    port=settings.options.service.port,
+    log_level=settings.options.service.log_level,
+    reload=settings.options.service.reload,
   )

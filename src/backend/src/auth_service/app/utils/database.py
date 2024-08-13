@@ -1,15 +1,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from utils.settings import Settings
+from utils.settings import settings
 
 
 def construct_db_url():
-  return f"postgresql://{Settings.database.user}:"\
-                      f"{Settings.database.password}@"\
-                      f"{Settings.database.host}:"\
-                      f"{Settings.database.port}/"\
-                      f"{Settings.database.db_name}"
+  # Settings.get()
+  return f"postgresql://{settings.options.database.user}:"\
+                      f"{settings.options.database.password}@"\
+                      f"{settings.options.database.host}:"\
+                      f"{settings.options.database.port}/"\
+                      f"{settings.options.database.db_name}"
 
 def get_db():
   db = SessionLocal()
