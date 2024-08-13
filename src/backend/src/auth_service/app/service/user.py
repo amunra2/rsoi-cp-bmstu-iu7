@@ -77,4 +77,4 @@ class UserService():
     if user is None:
       raise NotFoundException(prefix="delete user")
     
-    return self._userRepository.delete(user)
+    return await self._userRepository.delete(user)

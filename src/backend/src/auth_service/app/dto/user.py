@@ -4,6 +4,8 @@ from fastapi import Query
 from pydantic import BaseModel, ConfigDict, conint, constr, EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
+from model.user import UserModel
+
 PhoneNumber.phone_format = 'E164' # чтобы не было в возврате приписки 'tel:'
 
 class UserBaseDto(BaseModel):
@@ -17,22 +19,21 @@ class UserFilterDto(UserBaseDto):
   phone: Annotated[str, Query(max_length=64)] | None = None
 
 class UserCreateDto(UserBaseDto):
-  login: Annotated[str, constr(max_length=255)] | None = None
-  email: EmailStr | None = None
-  phone: PhoneNumber | None = None
+  password: Annotated[str, constr(min_length=8)]
 
 class UserUpdateDto(UserBaseDto):
   login: Annotated[str, constr(max_length=255)] | None = None
+  password: str | None = None
   email: EmailStr | None = None
   phone: PhoneNumber | None = None
 
 class UserDto(UserBaseDto):
   id: Annotated[int, conint(ge=1)]
   uuid: UUID
+  password: str
 
 class UserResponse(UserBaseDto):
-  # model_config = ConfigDict(from_attributes=True) зачем-то добавил и забыл зачем ???
-  
+  model_config = ConfigDict(from_attributes=True) # чинит какую-то ошибку
   uuid: UUID
 
 class UserPaginationResponse(BaseModel):

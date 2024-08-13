@@ -1,9 +1,6 @@
-import json
-from typing import Annotated
-import jsonpickle
 from pydantic import BaseModel
 from yaml import safe_load
-from consts import *
+from utils.consts import *
 
 CONFIG_PATH = "config.yaml"
 

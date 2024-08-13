@@ -1,27 +1,18 @@
-from pydantic import BaseModel, ConfigDict
+from uuid import UUID
+from fastapi import Response, status
 
+from utils.enums import DomainEnum
 
-class ErrorResponse(BaseModel):
-    model_config = ConfigDict(
-        json_schema_extra = {
-            "example": {
-                "message": "Method: exception description"
-            },
-        }
+class CreatedResponse(Response):
+  def __init__(self, domain: DomainEnum, id: int | UUID):
+    super().__init__(
+      status_code=status.HTTP_201_CREATED,
+      headers={"Location": f"/api/v1/{domain.value.lower()}/{id}"},  
+    )
+    
+class NoContentResponse(Response):
+  def __init__(self):
+    super().__init__(
+      status_code=status.HTTP_204_NO_CONTENT,
     )
 
-class ValidationErrorResponse(BaseModel):
-    model_config = ConfigDict(
-        json_schema_extra = {
-            "example": {
-                "message": "Invalid request",
-                "errors": [
-                    {
-                        "type": "type of error",
-                        "msg": "error message",
-                        "loc": "error location"
-                    }
-                ]
-            }
-        }
-    )

@@ -3,14 +3,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
-
-from consts import DomainsEnum
 from service.user import UserService
 from repository.user import UserRepository
-from enums.responses import ApiResponses
+from schemas.api_responses import ApiResponses
 from dto.user import UserPaginationResponse, UserResponse, UserCreateDto, UserUpdateDto, UserFilterDto
 from utils.database import get_db
-
+from schemas.response import CreatedResponse, NoContentResponse
+from utils.enums import DomainEnum
 
 def get_user_repository() -> UserRepository:
   return UserRepository
@@ -19,7 +18,7 @@ controller = APIRouter(
   prefix="/user",
   tags=["User REST API"],
   responses={
-    status.HTTP_400_BAD_REQUEST: ApiResponses.invalid_data(DomainsEnum.USER),
+    status.HTTP_400_BAD_REQUEST: ApiResponses.invalid_data(DomainEnum.USER),
   },
 )
 
@@ -28,7 +27,7 @@ controller = APIRouter(
   status_code=status.HTTP_200_OK,
   response_model=UserPaginationResponse,
   responses={
-    status.HTTP_200_OK: ApiResponses.get_all(DomainsEnum.USER)
+    status.HTTP_200_OK: ApiResponses.get_all(DomainEnum.USER)
   }
 )
 async def get_all_users(
@@ -52,8 +51,8 @@ async def get_all_users(
   status_code=status.HTTP_200_OK,
   response_model=UserResponse,
   responses={
-    status.HTTP_200_OK: ApiResponses.get_by_uuid(DomainsEnum.USER),
-    status.HTTP_404_NOT_FOUND: ApiResponses.not_found(DomainsEnum.USER),
+    status.HTTP_200_OK: ApiResponses.get_by_uuid(DomainEnum.USER),
+    status.HTTP_404_NOT_FOUND: ApiResponses.not_found(DomainEnum.USER),
   },
 )
 async def get_user_by_uuid(
@@ -73,7 +72,7 @@ async def get_user_by_uuid(
   status_code=status.HTTP_201_CREATED,
   response_class=Response,
   responses={
-    status.HTTP_201_CREATED: ApiResponses.create(DomainsEnum.USER),
+    status.HTTP_201_CREATED: ApiResponses.create(DomainEnum.USER),
   },
 )
 async def create_user(
@@ -88,9 +87,9 @@ async def create_user(
     user_create=user_create,
   )
 
-  return Response( # TODO
-    status_code=status.HTTP_201_CREATED,
-    headers={"Location": f"/api/v1/user/{user.uuid}"}     
+  return CreatedResponse(
+    domain=DomainEnum.USER,
+    id=user.uuid,
   )
 
 
@@ -99,8 +98,8 @@ async def create_user(
   status_code=status.HTTP_200_OK,
   response_model=UserResponse,
   responses={
-    status.HTTP_200_OK: ApiResponses.patch(DomainsEnum.USER),
-    status.HTTP_404_NOT_FOUND: ApiResponses.not_found(DomainsEnum.USER),
+    status.HTTP_200_OK: ApiResponses.patch(DomainEnum.USER),
+    status.HTTP_404_NOT_FOUND: ApiResponses.not_found(DomainEnum.USER),
   },
 )
 async def update_user(
@@ -109,7 +108,7 @@ async def update_user(
   uuid: UUID,
   user_patch: UserUpdateDto,
 ) -> UserResponse:
-  return UserService(
+  return await UserService(
     userRepository=userRepository,
     db=db,
   ).patch(
@@ -122,8 +121,8 @@ async def update_user(
   status_code=status.HTTP_204_NO_CONTENT,
   response_class=Response,
   responses={
-    status.HTTP_204_NO_CONTENT: ApiResponses.delete(DomainsEnum.USER),
-    status.HTTP_404_NOT_FOUND: ApiResponses.not_found(DomainsEnum.USER),
+    status.HTTP_204_NO_CONTENT: ApiResponses.delete(DomainEnum.USER),
+    status.HTTP_404_NOT_FOUND: ApiResponses.not_found(DomainEnum.USER),
   },
 )
 async def delete_user(
@@ -138,6 +137,4 @@ async def delete_user(
     uuid=uuid,
   )
 
-  return Response( # TODO
-    status_code=status.HTTP_204_NO_CONTENT,
-  )
+  return NoContentResponse()

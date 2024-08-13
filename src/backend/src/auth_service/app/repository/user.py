@@ -27,7 +27,6 @@ class UserRepository:
     return self._db.query(UserModel).filter(UserModel.uuid == uuid).first()
   
   async def create(self, model: UserModel) -> UserModel | None:
-    model.password = 12345 # TODO: УБРАТЬ
     try:
       self._db.add(model)
       self._db.commit()
@@ -42,7 +41,7 @@ class UserRepository:
     for key, value in model_updated_fileds.items():
       setattr(model, key, value)
 
-    return self.create(model)
+    return await self.create(model)
   
   async def delete(self, model: UserModel) -> UserModel:
     self._db.delete(model)
