@@ -1,7 +1,10 @@
+from pathlib import Path
 from pydantic import BaseModel
 from yaml import safe_load
 from utils.consts import *
 
+BASE_DIR = Path(__file__).parent.parent
+CERTS_DIR_NAME = "certs"
 CONFIG_PATH = "config.yaml"
 
 
@@ -20,9 +23,27 @@ class DatabaseSettings(BaseModel):
   db_name: str = None
   
   
+class AuthJWTSettings(BaseModel):
+  typ: str = "JWT"
+  algorithm: str = "RS256" # так как ключи Private и Public / иначе HS256
+  access_token_expire_minutes: int = 15
+  refresh_token_expire_minutes: int = 60
+  
+class JWKSSettings(BaseModel):
+  jwks_path: Path = BASE_DIR / CERTS_DIR_NAME / "jwks.json"
+  keys_to_generate: int = 1
+  kty: str = "RSA"
+  size: int = 2048
+  alg: str = "RSA256"
+  use: str = "sig"
+  kid: str = "1"
+  
+  
 class SettingOptions(BaseModel):
   service: ServiceSettings = ServiceSettings()
   database: DatabaseSettings = DatabaseSettings()
+  auth_jwt: AuthJWTSettings = AuthJWTSettings()
+  jwks: JWKSSettings = JWKSSettings()
 
 
 class Settings():

@@ -2,6 +2,7 @@ from typing import List, Union
 from uuid import UUID
 from sqlalchemy.orm import Session, Query
 
+from utils.addons import hash_password
 from model.user import UserModel
 from dto.user import UserFilterDto, UserUpdateDto
 from utils.addons import escape_like, ilike_search
@@ -26,7 +27,15 @@ class UserRepository:
   async def get_by_uuid(self, uuid: UUID) -> UserModel | None:
     return self._db.query(UserModel).filter(UserModel.uuid == uuid).first()
   
+  async def get_by_id(self, id: int) -> UserModel | None:
+    return self._db.query(UserModel).filter(UserModel.id == id).first()
+  
   async def create(self, model: UserModel) -> UserModel | None:
+    if type(model.password) == str:
+      model.password = hash_password(
+        password=model.password
+      )
+
     try:
       self._db.add(model)
       self._db.commit()
@@ -56,11 +65,20 @@ class UserRepository:
   ) -> Query[UserModel]:
     if filter.login:
       query = query.filter(UserModel.login.ilike(ilike_search(filter.login)))
+      
+    if filter.lastname:
+      query = query.filter(UserModel.lastname.ilike(ilike_search(filter.lastname)))
+      
+    if filter.firstname:
+      query = query.filter(UserModel.firstname.ilike(ilike_search(filter.firstname)))
 
     if filter.email:
       query = query.filter(UserModel.email.ilike(ilike_search(filter.email)))
     
     if filter.phone:
       query = query.filter(UserModel.phone.ilike(ilike_search(filter.phone)))
-
+      
+    if filter.role:
+      query = query.filter(UserModel.role == filter.role)
+    
     return query

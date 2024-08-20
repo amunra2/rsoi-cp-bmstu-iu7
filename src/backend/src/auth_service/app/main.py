@@ -8,6 +8,8 @@ from exceptions.handlers import http_exception_handler, request_validation_excep
 from utils.settings import settings
 from controller.api import controller as api_contoller
 
+from utils.jwks import auth_jwk
+
 def custom_openapi():
   if not app.openapi_schema:
     app.openapi_schema = get_openapi(
@@ -51,6 +53,7 @@ async def custom_validation_exception_handler(request, exp):
   return await request_validation_exception_handler(request, exp)
 
 if __name__ == "__main__":
+  auth_jwk.generate_jwks()  
   uvicorn.run(
     "main:app",
     host=settings.options.service.host,

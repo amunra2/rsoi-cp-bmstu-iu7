@@ -1,5 +1,7 @@
 from fastapi import HTTPException, status
 
+from utils.enums import LoginErrorTextEnum, BadRequestErrorTextEnum
+
 
 class NotFoundException(HTTPException):
   def __init__(
@@ -15,12 +17,48 @@ class NotFoundException(HTTPException):
 
 class ConflictException(HTTPException):
   def __init__(
-      self,
+    self,
     prefix: str,
     headers: dict[str, str] | None = None,
   ) -> None:
     super().__init__(
       status_code=status.HTTP_409_CONFLICT,
       detail=f"{prefix}: объект с таким(и) атрибутом(ами) уже существует",
+      headers=headers,
+    )
+    
+class NotAuthorizedException(HTTPException):
+  def __init__(
+    self,
+    error_in: LoginErrorTextEnum,
+    headers: dict[str, str] | None = None,
+  ) -> None:
+    super().__init__(
+      status_code=status.HTTP_401_UNAUTHORIZED,
+      detail=f"Не авторизован: {error_in}",
+      headers=headers,
+    )
+    
+class BadRequestException(HTTPException):
+  def __init__(
+    self,
+    error_in: BadRequestErrorTextEnum,
+    detail: str,
+    headers: dict[str, str] | None = None,
+  ) -> None:
+    super().__init__(
+      status_code=status.HTTP_400_BAD_REQUEST,
+      detail=f"Ошибка данных: {error_in} ({detail})",
+      headers=headers,
+    )
+    
+class ForbiddenException(HTTPException):
+  def __init__(
+    self,
+    headers: dict[str, str] | None = None,
+  ) -> None:
+    super().__init__(
+      status_code=status.HTTP_403_FORBIDDEN,
+      detail=f"Запрещено: Нет доступа",
       headers=headers,
     )

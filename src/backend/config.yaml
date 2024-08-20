@@ -3,8 +3,8 @@ databases:
     user: postgres
     password: password
     db: auth
-    host: pg_db
-    port: 5432
+    host: localhost #pg_db
+    port: 5434 #5432
   library_db:
     user: postgres
     password: password
