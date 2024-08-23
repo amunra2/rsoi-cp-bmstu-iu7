@@ -5,7 +5,6 @@ from utils.settings import settings
 
 
 def construct_db_url():
-  # Settings.get()
   return f"postgresql://{settings.options.database.user}:"\
                       f"{settings.options.database.password}@"\
                       f"{settings.options.database.host}:"\

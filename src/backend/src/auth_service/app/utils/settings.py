@@ -36,7 +36,7 @@ class JWKSSettings(BaseModel):
   size: int = 2048
   alg: str = "RSA256"
   use: str = "sig"
-  kid: str = "1"
+  kid: str = None # из глобальных настроек, чтобы также менять во всех сервисах
   
   
 class SettingOptions(BaseModel):
@@ -66,6 +66,9 @@ class Settings():
       Settings.options.database.host = currentDatabaseData[HOST]
       Settings.options.database.port = currentDatabaseData[PORT]
       Settings.options.database.db_name = currentDatabaseData[DB_NAME]
+      
+      authServiceData = data[SERVICES][AUTH]
+      Settings.options.jwks.kid = authServiceData[JWKS_KID]
     except KeyError as e:
       print(f"SETTINGS: no argument {e}")
     else:

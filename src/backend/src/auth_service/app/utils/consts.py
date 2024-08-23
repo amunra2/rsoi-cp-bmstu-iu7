@@ -1,8 +1,3 @@
-from enum import Enum
-
-# Prefix/Suffix
-DB_SUFFIX="_db"
-
 # Settings
 SERVICES="services"
 AUTH="auth"
@@ -14,6 +9,7 @@ DATABASES="databases"
 USER="user"
 PASSWORD="password"
 DB_NAME="db"
+JWKS_KID="kid"
 
-# App
-JWK_KID_FIELD="kid"
+# Prefix/Suffix
+DB_SUFFIX="_db"
