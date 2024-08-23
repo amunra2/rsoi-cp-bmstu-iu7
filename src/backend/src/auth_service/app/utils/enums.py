@@ -20,22 +20,17 @@ class BadRequestErrorTextEnum(StrEnum):
   INVALID_PAYLOAD_FIELD="Неверные поля payload"
   INVALID_TOKEN_TYPE="Неверный тип токена"
 
-  
-  
 class TokenTypeEnum(StrEnum):
   ACCESS="access"
-  REFRESH="refresh"
-  
+  REFRESH="refresh"  
   
 class AuthTypeEnum(StrEnum):
   BEARER="Bearer"
-  
   
 class JWTScopeEnum(StrEnum):
   OPENID="openid"
   PROFILE="profile"
   EMAIL="email"
-  
   
 class PayloadEnum(StrEnum):
   SUB="sub"
@@ -54,7 +49,6 @@ class HeaderEnum(StrEnum):
   TYP="typ"
   ALG="alg"
   KID="kid"
-  
   
 class RoleEnum(StrEnum):
   USER="USER"
