@@ -91,7 +91,6 @@ class UserPayloadDto(BaseModel):
 class UserRefreshDto(BaseModel):
   refresh_token: str
   scope: List[JWTScopeEnum] | None = None
-  Annotated[str, constr(min_length=8)]
   
 class UserRefreshPayloadDto(BaseModel):
   sub: UUID

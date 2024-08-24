@@ -70,6 +70,7 @@ class UserService():
     
     token = TokenInfo(
       access_token=auth_jwt.get_access_token(user, scope=scope),
+      refresh_token=refresh_token,
     )
     
     return token

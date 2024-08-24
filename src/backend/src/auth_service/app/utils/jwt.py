@@ -137,7 +137,7 @@ class AuthJWT:
       else:
         for data in scope:
           if data == JWTScopeEnum.OPENID:
-            pass # базовый payload access
+            continue # базовый payload access
           elif data == JWTScopeEnum.EMAIL:
             jwt_payload.update({
               PayloadEnum.EMAIL: user.email
@@ -148,7 +148,6 @@ class AuthJWT:
               PayloadEnum.FIRSTNAME: user.firstname,
               PayloadEnum.PHONE: user.phone,
             })
-            pass
       
     return jwt_payload
   
