@@ -9,8 +9,8 @@ databases:
     user: postgres
     password: password
     db: libraries
-    host: pg_db
-    port: 5432
+    host: localhost #pg_db
+    port: 5434 #5432
   rating_db:
     user: postgres
     password: password
@@ -30,6 +30,7 @@ services:
     port: 8888
     log_level: "info"
     reload: True
+    kid: "1"
   library:
     host: "0.0.0.0"
     port: 8060
