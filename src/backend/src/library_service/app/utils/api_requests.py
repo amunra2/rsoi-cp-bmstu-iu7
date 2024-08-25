@@ -4,7 +4,7 @@ from requests import Response
 from fastapi import status
 
 from exceptions.http import InvalidRequestException, ServiceUnavailableException
-from utils.consts import LIBRARY
+from utils.consts import AUTH
 from utils.addons import get_service_name
 
 def __check_status_code(
@@ -38,5 +38,5 @@ def get_request(
     response = Response()
     response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     
-  __check_status_code(response.status_code, get_service_name(LIBRARY))
+  __check_status_code(response.status_code, get_service_name(AUTH))
   return response

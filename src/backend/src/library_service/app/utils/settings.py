@@ -4,7 +4,6 @@ from yaml import safe_load
 from utils.consts import *
 
 BASE_DIR = Path(__file__).parent.parent
-CERTS_DIR_NAME = "certs"
 CONFIG_PATH = "config.yaml"
 
 
