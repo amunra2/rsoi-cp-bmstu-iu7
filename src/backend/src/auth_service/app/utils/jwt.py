@@ -7,6 +7,7 @@ from utils.jwks import auth_jwk
 from model.user import UserModel
 from utils.enums import HeaderEnum, JWTScopeEnum, TokenTypeEnum, PayloadEnum
 from utils.settings import settings
+from utils.consts import JWKS_KID
 
 '''
 Класс для работы с методами, связанными с JWT
@@ -215,25 +216,22 @@ class AuthJWT:
   '''
   Функция, которая декодирует токен token и проверяет его подпись 
   ключом, который получен из связки ключей типа JWKSet
-  по айди ключа jwk_kid:
+  по айди ключа jwk_kid
     
   Вход:
     * token: str - jwt токен
-    * jwk_kid: str - идентификатор ключа набора ключей jwks
   Выход:
     * jwt токен в виде строки str
   '''
   @staticmethod
   def decode_jwt(
     token: str | bytes,
-    jwk_kid: str = settings.options.jwks.kid,
-  ) -> Dict:
+  ) -> JWT:
     jwks_dict = auth_jwk.get_jwks_from_file()
     jwks = auth_jwk.transform_dict_to_jwks(jwks_dict)
-    key = auth_jwk.get_by_kid(jwks, jwk_kid)
     
-    jwt = JWT(jwt=token)
-    jwt.validate(key=key)
+    jwt = JWT()
+    jwt.deserialize(jwt=token, key=jwks)
     
     return json.loads(jwt.claims)
 
