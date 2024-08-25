@@ -1,3 +1,5 @@
+from typing import Annotated
+from fastapi import Query
 from pydantic import BaseModel, constr, conint, validator
 from datetime import datetime
 from uuid import UUID
@@ -10,7 +12,7 @@ def convert_datetime_to_iso_8601(dt: datetime) -> str:
 
 
 class ReservationBase(BaseModel):
-  username: constr(max_length=80)
+  username: Annotated[str, constr(max_length=80)]
   library_uid: UUID
   book_uid: UUID
   status: ReservationStatus
@@ -24,12 +26,12 @@ class ReservationBase(BaseModel):
 
 
 class ReservationFilter(BaseModel):
-  username: constr(max_length=80) | None = None
-  library_uid: UUID | None = None
-  book_uid: UUID | None = None
-  status: ReservationStatus | None = None
-  start_date: datetime | None = None
-  till_date: datetime | None = None
+  username: Annotated[str | None, Query(max_length=800)] = None
+  book_uid: Annotated[UUID, Query()] | None = None
+  library_uid: Annotated[UUID, Query()] | None = None
+  status: Annotated[ReservationStatus, Query()] | None = None
+  start_date: Annotated[datetime, Query()] | None = None
+  till_date: Annotated[datetime, Query()] | None = None
 
   @validator("start_date", "till_date", pre=True)
   def datetime_validate(cls, dt):
@@ -38,7 +40,7 @@ class ReservationFilter(BaseModel):
   
 
 class ReservationUpdate(BaseModel):
-  username: constr(max_length=80) | None = None
+  username: Annotated[str, constr(max_length=80)] | None = None
   library_uid: UUID | None = None
   book_uid: UUID | None = None
   status: ReservationStatus | None = None
@@ -52,7 +54,7 @@ class ReservationUpdate(BaseModel):
 
 
 class ReservationCreate(BaseModel):
-  username: constr(max_length=80)
+  username: Annotated[str, constr(max_length=80)]
   library_uid: UUID
   book_uid: UUID
   status: ReservationStatus
