@@ -1,3 +1,4 @@
+from typing import Annotated, List
 from pydantic import BaseModel, conint, constr
 from uuid import UUID
 
@@ -6,15 +7,9 @@ from enums.status import ConditionStatus
 
 # ======= Library =======
 class LibraryBase(BaseModel):
-  name: constr(max_length=80) | None
-  city: constr(max_length=255) | None
-  address: constr(max_length=255) | None
-
-
-class LibraryFilter(BaseModel):
-  name: constr(max_length=80) | None = None
-  city: constr(max_length=255) | None = None
-  address: constr(max_length=255) | None = None
+  name: Annotated[str, constr(max_length=80)] | None
+  city: Annotated[str, constr(max_length=255)] | None
+  address: Annotated[str, constr(max_length=255)] | None
 
 
 class Library(LibraryBase):
@@ -30,21 +25,21 @@ class LibraryPaginationResponse(BaseModel):
   page: int
   pageSize: int
   totalElements: int
-  items: list[LibraryResponse]
+  items: List[LibraryResponse]
 
 
 # ======= Book =======
 class BookBase(BaseModel):
-  name: constr(max_length=255) | None
-  author: constr(max_length=255) | None
-  genre: constr(max_length=255) | None
+  name: Annotated[str, constr(max_length=255)] | None
+  author: Annotated[str, constr(max_length=255)] | None
+  genre: Annotated[str, constr(max_length=255)] | None
   condition: ConditionStatus | None
 
 
 class BookUpdate(BaseModel):
-  name: constr(max_length=255) | None = None
-  author: constr(max_length=255) | None = None
-  genre: constr(max_length=255) | None = None
+  name: Annotated[str, constr(max_length=255)] | None = None
+  author: Annotated[str, constr(max_length=255)] | None = None
+  genre: Annotated[str, constr(max_length=255)] | None = None
   condition: ConditionStatus | None = None
 
 
@@ -58,10 +53,10 @@ class BookInfo(BookBase):
 
 
 class BookPaginationResponse(BaseModel):
-  page: conint(ge=1)
-  pageSize: conint(ge=1)
-  totalElements: conint(ge=0)
-  items: list[BookInfo]
+  page: Annotated[int, conint(ge=1)]
+  pageSize: Annotated[int, conint(ge=1)]
+  totalElements: Annotated[int, conint(ge=0)]
+  items: List[BookInfo]
 
 
 # ===== LibraryBookEntity =====
@@ -72,13 +67,13 @@ class LibraryBookEntityBase(BaseModel):
 
 
 class LibraryBookUpdate(BaseModel):
-  library_id: conint(ge=1) | None = None
-  book_id: conint(ge=1) | None = None
-  available_count: conint(ge=0) | None = None
+  library_id: Annotated[int, conint(ge=1)] | None = None
+  book_id: Annotated[int, conint(ge=1)] | None = None
+  available_count: Annotated[int, conint(ge=0)] | None = None
 
 
 class LibraryBookEntity(LibraryBookEntityBase):
-    id: int
+  id: int
 
 
 class LibraryBookEntityResponse(LibraryBookEntityBase):
@@ -98,4 +93,4 @@ class LibraryBookPaginationResponse(BaseModel):
   page: int
   pageSize: int
   totalElements: int
-  items: list[LibraryBookResponse]
+  items: List[LibraryBookResponse]

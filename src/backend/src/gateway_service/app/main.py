@@ -4,7 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
 
 from routers.api import router as api_router
-from utils.settings import get_settings
+from utils.settings import settings
 from exceptions.handlers import (
   http_exception_handler,
   request_validation_exception_handler,
@@ -56,11 +56,10 @@ async def custom_validation_exception_handler(request, exp):
 
 
 if __name__ == '__main__':
-  settings = get_settings()
   uvicorn.run(
     "main:app", 
-    host=settings["services"]["gateway"]["host"],
-    port=settings["services"]["gateway"]["port"],
-    log_level=settings["services"]["gateway"]["log_level"],
-    reload=settings["services"]["gateway"]["reload"]
+    host=settings.options.gateway_service.host,
+    port=settings.options.gateway_service.port,
+    log_level=settings.options.gateway_service.log_level,
+    reload=settings.options.gateway_service.reload,
   )

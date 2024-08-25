@@ -3,12 +3,11 @@ import time
 from threading import Thread
 from fastapi import status
 
-from utils.settings import get_settings
+from utils.settings import settings, GatewayServiceSettings
 
 
 class CircuitBreaker:
-  gatewaySettings = get_settings()["services"]["gateway"]
-
+  gateway_settings: GatewayServiceSettings = settings.options.gateway_service
   _fail_statistic = {}
   _service_state = {}
   _waiter: Thread = None
@@ -35,7 +34,7 @@ class CircuitBreaker:
       print(f"Service {host_url} is unavailable")
       return resp
 
-    for _ in range(CircuitBreaker.gatewaySettings["max_num_of_fails"] + 1):
+    for _ in range(CircuitBreaker.gateway_settings.max_num_of_fails):
       try:
         resp = http_method(
           url=url, 
@@ -56,7 +55,7 @@ class CircuitBreaker:
 
     fail_num = CircuitBreaker._fail_statistic.get(host_url)
     if fail_num is not None and \
-      fail_num > CircuitBreaker.gatewaySettings["max_num_of_fails"]:
+      fail_num > CircuitBreaker.gateway_settings.max_num_of_fails:
       print(f"The number fails for {host_url} is overflow")
       
       CircuitBreaker._fail_statistic[host_url] = 0
@@ -73,7 +72,7 @@ class CircuitBreaker:
   def _wait_for_available():
     is_end = False
     while not is_end:
-      time.sleep(CircuitBreaker.gatewaySettings["timeout"])
+      time.sleep(CircuitBreaker.gateway_settings.timeout)
       is_end = True
       for host_url in CircuitBreaker._service_state.keys():
         if CircuitBreaker._service_state[host_url] == "unavailable":

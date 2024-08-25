@@ -1,4 +1,5 @@
-from pydantic import BaseModel, constr, conint, validator
+from typing import Annotated
+from pydantic import BaseModel, constr, conint, field_validator
 from datetime import datetime
 from uuid import UUID
 
@@ -12,14 +13,14 @@ def convert_datetime_to_iso_8601(dt: datetime) -> str:
 
 
 class ReservationBase(BaseModel):
-  username: constr(max_length=80)
+  username: Annotated[str, constr(max_length=80)]
   bookUid: UUID
   libraryUid: UUID
   status: ReservationStatus
   startDate: datetime
   tillDate: datetime
 
-  @validator("startDate", "tillDate", pre=True)
+  @field_validator("startDate", "tillDate", mode="before")
   def datetime_validate(cls, dt):
     if dt:
       return datetime.fromisoformat(dt)
@@ -30,27 +31,27 @@ class Reservation(ReservationBase):
 
 
 class ReservationCreate(BaseModel):
-  username: constr(max_length=80)
+  username: Annotated[str, constr(max_length=80)]
   library_uid: UUID | str
   book_uid: UUID | str
   status: ReservationStatus
   start_date: datetime | str
   till_date: datetime | str
 
-  @validator("start_date", "till_date", pre=True)
+  @field_validator("start_date", "till_date", mode="before")
   def datetime_validate(cls, dt):
     return datetime.fromisoformat(dt)
   
 
 class ReservationUpdate(BaseModel):
-  username: constr(max_length=80) | None = None
+  username: Annotated[str, constr(max_length=80)] | None = None
   library_uid: UUID | None = None
   book_uid: UUID | None = None
   status: ReservationStatus | None = None
   start_date: datetime | None = None
   till_date: datetime | None = None
 
-  @validator("start_date", "till_date", pre=True)
+  @field_validator("start_date", "till_date", mode="before")
   def datetime_validate(cls, dt):
     if dt:
       return datetime.fromisoformat(dt)
@@ -58,7 +59,7 @@ class ReservationUpdate(BaseModel):
 
 class BookReservationResponse(BaseModel):
   reservationUid: UUID
-  username: constr(max_length=80)
+  username: Annotated[str, constr(max_length=80)]
   status: ReservationStatus
   startDate: datetime
   tillDate: datetime
@@ -76,7 +77,7 @@ class TakeBookRequest(BaseModel):
   bookUid: UUID
   tillDate: datetime
 
-  @validator("tillDate", pre=True)
+  @field_validator("tillDate", mode="before")
   def datetime_validate(cls, dt):
     if dt:
       return datetime.fromisoformat(dt)
@@ -101,7 +102,7 @@ class ReturnBookRequest(BaseModel):
   condition: ConditionStatus
   date: datetime
 
-  @validator("date", pre=True)
+  @field_validator("date", mode="before")
   def datetime_validate(cls, dt):
     if dt:
       return datetime.fromisoformat(dt)

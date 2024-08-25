@@ -2,7 +2,7 @@ import time
 from threading import Thread
 from datetime import datetime
 
-from utils.settings import get_settings
+from utils.settings import settings, GatewayServiceSettings
 
 
 class Request:
@@ -15,8 +15,7 @@ class Request:
 
 
 class RequestQueue:
-  gatewaySettings = get_settings()["services"]["gateway"]
-
+  gateway_settings: GatewayServiceSettings = settings.options.gateway_service
   _req_queue: dict[str, Request] = {}
   _req_sender: Thread = None
 
@@ -50,7 +49,7 @@ class RequestQueue:
           target=RequestQueue._req_send, 
           args=(req_key,)
         ).start()
-      time.sleep(RequestQueue.gatewaySettings["timeout"])
+      time.sleep(RequestQueue.gateway_settings.timeout)
 
     RequestQueue._req_sender = None
 

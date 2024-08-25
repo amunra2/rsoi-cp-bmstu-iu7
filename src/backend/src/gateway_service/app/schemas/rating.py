@@ -1,14 +1,15 @@
+from typing import Annotated
 from pydantic import BaseModel, constr, conint
 
 
 class RatingBase(BaseModel):
-  username: constr(max_length=80)
-  stars: conint(ge=1, le=100)
+  username: Annotated[str, constr(max_length=80)]
+  stars: Annotated[int, conint(ge=1, le=100)]
 
 
 class RatingUpdate(BaseModel):
-  username: constr(max_length=80) | None = None
-  stars: conint(ge=1, le=100) | None = None
+  username: Annotated[str, constr(max_length=80)] | None = None
+  stars: Annotated[int, conint(ge=1, le=100)] | None = None
 
 
 class RatingCreate(RatingBase):
@@ -20,4 +21,4 @@ class Rating(RatingBase):
 
 
 class UserRatingResponse(BaseModel):
-  stars: conint(ge=1, le=100)
+  stars: Annotated[int, conint(ge=1, le=100)]
