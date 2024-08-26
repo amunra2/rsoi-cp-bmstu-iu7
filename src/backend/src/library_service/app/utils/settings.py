@@ -52,7 +52,7 @@ class Settings():
       Settings.options.database.db_name = currentDatabaseData[DB_NAME]
       
       authServiceData = data[SERVICE+S_SUFFIX][AUTH]
-      Settings.options.jwks.host = authServiceData[HOST]
+      Settings.options.jwks.host = authServiceData[NETWORK_HOST]
       Settings.options.jwks.port = authServiceData[PORT]
       Settings.options.jwks.kid = authServiceData[JWKS_KID]
     except KeyError as e:

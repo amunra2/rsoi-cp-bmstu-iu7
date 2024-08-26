@@ -72,7 +72,7 @@ class Settings():
       Settings.options.reservation_service.reload = reservation_service_data[RELOAD]
 
       authServiceData = data[SERVICE+S_SUFFIX][AUTH]
-      Settings.options.jwks.host = authServiceData[HOST]
+      Settings.options.jwks.host = authServiceData[NETWORK_HOST]
       Settings.options.jwks.port = authServiceData[PORT]
       Settings.options.jwks.kid = authServiceData[JWKS_KID]
     except KeyError as e:

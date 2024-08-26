@@ -7,6 +7,7 @@ RELOAD="reload"
 JWKS_KID="kid"
 MAX_NUM_OF_FAILS="max_num_of_fails"
 TIMEOUT="timeout"
+NETWORK_HOST="network_host"
 
 # Domain
 GATEWAY="gateway"

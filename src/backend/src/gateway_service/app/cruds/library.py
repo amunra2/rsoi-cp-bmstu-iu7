@@ -22,7 +22,7 @@ from schemas.library import (
 
 class LibraryCRUD(BaseCRUD):
   def __init__(self):
-    host = settings.options.library_service.host
+    host = settings.options.gateway_service.library_host
     port = settings.options.library_service.port
     self.http_path = f'http://{host}:{port}/api/v1/'
 

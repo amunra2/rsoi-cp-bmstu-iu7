@@ -11,6 +11,7 @@ USER="user"
 PASSWORD="password"
 DB_NAME="db"
 JWKS_KID="kid"
+NETWORK_HOST="network_host"
 
 # Prefix/Suffix
 DB_SUFFIX="_db"

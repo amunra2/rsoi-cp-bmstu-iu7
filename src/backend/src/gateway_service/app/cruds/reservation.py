@@ -16,7 +16,7 @@ from enums.status import ReservationStatus
 
 class ReservationCRUD(BaseCRUD):
   def __init__(self):
-    host = settings.options.reservation_service.host
+    host = settings.options.gateway_service.reservation_host
     port = settings.options.reservation_service.port
     self.http_path = f'http://{host}:{port}/api/v1/'
 

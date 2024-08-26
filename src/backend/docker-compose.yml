@@ -22,6 +22,20 @@ services:
       timeout: 5s
       retries: 10
 
+  auth_service:
+    image: auth_service
+    container_name: auth_service
+    build:
+      context: "."
+      dockerfile: ./docker/auth.Dockerfile
+    ports:
+      - "8888:8888"
+    networks:
+      - default
+    depends_on:
+      pg_db:
+        condition: service_healthy
+
   library_service:
     image: library_service
     container_name: library_service

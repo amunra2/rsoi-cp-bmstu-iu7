@@ -3,14 +3,14 @@ databases:
     user: postgres
     password: password
     db: auth
-    host: localhost #pg_db
-    port: 5434 #5432
+    host: pg_db
+    port: 5432
   library_db:
     user: postgres
     password: password
     db: libraries
-    host: localhost #pg_db
-    port: 5434 #5432
+    host: pg_db
+    port: 5432
   rating_db:
     user: postgres
     password: password
@@ -26,7 +26,8 @@ databases:
 
 services:
   auth:
-    host: "localhost"
+    host: "0.0.0.0"
+    network_host: auth_service
     port: 8888
     log_level: "info"
     reload: True

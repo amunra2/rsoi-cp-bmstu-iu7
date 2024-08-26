@@ -15,7 +15,7 @@ from schemas.rating import Rating, RatingUpdate, RatingCreate
 
 class RatingCRUD(BaseCRUD):
   def __init__(self):
-    host = settings.options.rating_service.host
+    host = settings.options.gateway_service.rating_host
     port = settings.options.rating_service.port
     self.http_path = f'http://{host}:{port}/api/v1/'
 
