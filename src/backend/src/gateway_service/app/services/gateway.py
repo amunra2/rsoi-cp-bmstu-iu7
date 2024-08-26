@@ -2,6 +2,7 @@ import json
 from uuid import UUID
 import sys
 from datetime import datetime
+from fastapi.security import HTTPAuthorizationCredentials
 import requests
 
 from cruds.library import LibraryCRUD
@@ -33,7 +34,7 @@ from schemas.rating import (
   RatingCreate,
 )
 from utils.requests_queue import RequestQueue
-from utils.settings import get_settings
+from utils.settings import settings
 from enums.status import ReservationStatus, ConditionStatus
 from exceptions.http import BadRequestException, NotFoundException, ServiceUnavailableException
 
@@ -51,22 +52,23 @@ class GatewayService():
     self._reservationCRUD: ReservationCRUD = reservationCRUD()
     self._ratingCRUD: RatingCRUD = ratingCRUD()
 
-    settings = get_settings()
-    gateway_host = settings["services"]["gateway"]["host"]
-    gateway_port = settings["services"]["gateway"]["port"]
-    self.http_path = f'http://{gateway_host}:{gateway_port}/api/v1/'
+    host = settings.options.gateway_service.host
+    port = settings.options.gateway_service.port
+    self.http_path = f'http://{host}:{port}/api/v1/'
 
 
   async def get_all_libraries_in_city(
-      self,
-      city: str,
-      page: int = 1,
-      size: int = 100,
+    self,
+    city: str,
+    page: int = 1,
+    size: int = 100,
+    token: HTTPAuthorizationCredentials | None = None,
   ):
     libraries = await self._libraryCRUD.get_all_libraries(
       page=page,
       size=size,
       city=city,
+      token=token,
     )
 
     return LibraryPaginationResponse(
@@ -78,15 +80,17 @@ class GatewayService():
   
 
   async def get_books_in_library(
-      self,
-      library_uid: UUID,
-      show_all: bool = False,
-      page: int = 1,
-      size: int = 100,
+    self,
+    library_uid: UUID,
+    show_all: bool = False,
+    page: int = 1,
+    size: int = 100,
+    token: HTTPAuthorizationCredentials | None = None,
   ):
     library_books = await self._libraryCRUD.get_all_library_books(
       page=page,
       size=size,
+      token=token,
     )
 
     library_book_items: list[LibraryBookResponse] = []
@@ -113,22 +117,24 @@ class GatewayService():
   
   
   async def get_user_rented_books(
-      self,
-      X_User_Name: str,
-      page: int = 1,
-      size: int = 100,
+    self,
+    X_User_Name: str,
+    page: int = 1,
+    size: int = 100,
+    token: HTTPAuthorizationCredentials | None = None,
   ):
     reservations: list[Reservation] = await self._reservationCRUD.get_all_reservations(
       page=page,
       size=size,
       username=X_User_Name,
+      token=token,
     )
 
     book_reservations: list[BookReservationResponse] = []
     for reservation in reservations:
       try:
-        library: LibraryResponse = await self._libraryCRUD.get_library_by_uid(reservation.libraryUid)
-        book: BookInfo = await self._libraryCRUD.get_book_by_uid(reservation.bookUid)
+        library: LibraryResponse = await self._libraryCRUD.get_library_by_uid(reservation.libraryUid, token=token)
+        book: BookInfo = await self._libraryCRUD.get_book_by_uid(reservation.bookUid, token=token)
 
         book_reservations.append(
           BookReservationResponse(
@@ -169,29 +175,34 @@ class GatewayService():
   
 
   async def get_user_rating(
-      self,
-      X_User_Name: str,
+    self,
+    X_User_Name: str,
+    token: HTTPAuthorizationCredentials | None = None,
   ):
     rating = await self.__get_rating_by_username(
-      username=X_User_Name
+      username=X_User_Name,
+      token=token,
     )
     return UserRatingResponse(
-      stars= rating.stars,
+      stars=rating.stars,
     )
   
 
   async def take_book(
-      self,
-      X_User_Name: str,
-      take_book_request: TakeBookRequest,
+    self,
+    X_User_Name: str,
+    take_book_request: TakeBookRequest,
+    token: HTTPAuthorizationCredentials | None = None,
   ):
     user_rented_books = await self._reservationCRUD.get_all_reservations(
       size=sys.maxsize,
       username=X_User_Name,
       status=ReservationStatus.RENTED,
+      token=token,
     )
     user_rating = await self.get_user_rating(
       X_User_Name=X_User_Name,
+      token=token,
     )
 
     if (len(user_rented_books) >= user_rating.stars):
@@ -200,6 +211,7 @@ class GatewayService():
     library_book = await self.__get_book_in_library(
       libraryUid=take_book_request.libraryUid,
       bookUid=take_book_request.bookUid,
+      token=token,
     )
 
     if (library_book.availableCount == 0):
@@ -213,11 +225,13 @@ class GatewayService():
         status=ReservationStatus.RENTED,
         start_date=datetime.now().strftime('%Y-%m-%d'),
         till_date=take_book_request.tillDate.strftime('%Y-%m-%d'),
-      )
+      ),
+      token=token,
     )
 
     reservation = await self._reservationCRUD.get_reservation_by_uid(
       uid=reservation_uid,
+      token=token,
     )
 
     try:
@@ -226,9 +240,10 @@ class GatewayService():
         update=LibraryBookUpdate(
           available_count=library_book.availableCount - 1,
         ),
+        token=token,
       )
     except ServiceUnavailableException:
-      await self._reservationCRUD.delete_reservation(reservation)
+      await self._reservationCRUD.delete_reservation(reservation, token=token)
 
     return TakeBookResponse(
       reservationUid=reservation.reservationUid,
@@ -246,33 +261,42 @@ class GatewayService():
     X_User_Name: str,
     reservation_uid: UUID,
     return_book_request: ReturnBookRequest,
+    token: HTTPAuthorizationCredentials | None = None,
   ):
-    reservation: Reservation = await self._reservationCRUD.get_reservation_by_uid(
-      uid=reservation_uid
+    reservation: Reservation | None = await self._reservationCRUD.get_reservation_by_uid(
+      uid=reservation_uid,
+      token=token,
     )
     if not reservation:
       raise NotFoundException(prefix="return_book", message="Бронирование не найдено")
     
+    if reservation.status in (ReservationStatus.RETURNED, ReservationStatus.EXPIRED):
+      raise NotFoundException(prefix="return_book", message="Книга уже возвращена")
+    
     status_return = await self.__change_reservation_info(
       reservation=reservation,
-      return_book_request=return_book_request
+      return_book_request=return_book_request,
+      token=token,
     )
     
     try:
       book = await self._libraryCRUD.get_book_by_uid(
         uid=reservation.bookUid,
+        token=token,
       )
 
       await self._libraryCRUD.patch_book( # upd book condition
         uid=reservation.bookUid,
         update=BookUpdate(
           condition=return_book_request.condition,
-        )
+        ),
+        token=token,
       )
 
       library_book = await self.__get_book_in_library( # find library_book info
         libraryUid=reservation.libraryUid,
         bookUid=reservation.bookUid,
+        token=token,
       )
 
       await self._libraryCRUD.patch_library_book( # inc available count
@@ -280,6 +304,7 @@ class GatewayService():
         update=LibraryBookUpdate(
           available_count=library_book.availableCount + 1,
         ),
+        token=token,
       )
     except ServiceUnavailableException:
       RequestQueue.add_http_request(
@@ -295,6 +320,7 @@ class GatewayService():
         status_return=status_return,
         updated_condition=return_book_request.condition,
         book_condtiton=book.condition,
+        token=token,
       )
     except ServiceUnavailableException:
       RequestQueue.add_http_request(
@@ -308,14 +334,16 @@ class GatewayService():
 
 
   async def __change_user_rating(
-      self,
-      X_User_Name: str,
-      status_return: ReservationStatus,
-      updated_condition: ConditionStatus,
-      book_condtiton: ConditionStatus,
+    self,
+    X_User_Name: str,
+    status_return: ReservationStatus,
+    updated_condition: ConditionStatus,
+    book_condtiton: ConditionStatus,
+    token: HTTPAuthorizationCredentials | None = None,
   ) -> None:
     rating = await self.__get_rating_by_username(
       username=X_User_Name,
+      token=token,
     )
 
     stars = rating.stars
@@ -341,14 +369,16 @@ class GatewayService():
       id=rating.id,
       update=RatingUpdate(
         stars=stars,
-      )
+      ),
+      token=token,
     )
     
 
   async def __change_reservation_info(
-      self,
-      reservation: Reservation,
-      return_book_request: ReturnBookRequest,
+    self,
+    reservation: Reservation,
+    return_book_request: ReturnBookRequest,
+    token: HTTPAuthorizationCredentials | None = None,
   ) -> ReservationStatus:
     status_return = ReservationStatus.RETURNED \
       if return_book_request.date <= reservation.tillDate \
@@ -358,19 +388,22 @@ class GatewayService():
       uid=reservation.reservationUid,
       update=ReservationUpdate(
         status=status_return,
-      )
+      ),
+      token=token,
     )
 
     return status_return
     
 
   async def __get_book_in_library(
-      self,
-      libraryUid: UUID,
-      bookUid: UUID,
+    self,
+    libraryUid: UUID,
+    bookUid: UUID,
+    token: HTTPAuthorizationCredentials | None = None,
   ) -> LibraryBookEntityResponse:
     library_books = await self._libraryCRUD.get_all_library_books(
       size=sys.maxsize,
+      token=token,
     )
 
     library_book_items: list[LibraryBookEntityResponse] = []
@@ -389,11 +422,13 @@ class GatewayService():
     
 
   async def __get_rating_by_username(
-      self,
-      username: str,
+    self,
+    username: str,
+    token: HTTPAuthorizationCredentials | None = None,
   ) -> Rating:
     ratings: list[Rating] = await self._ratingCRUD.get_all_ratings(
       username=username,
+      token=token,
     )
     
     if ratings:
@@ -405,10 +440,11 @@ class GatewayService():
       rating_id = await self._ratingCRUD.add_rating(RatingCreate(
         username=username,
         stars=50,
-      ))
+      ), token=token)
 
       rating = await self._ratingCRUD.get_rating_by_id(
         id=rating_id,
+        token=token,
       )
 
       return rating

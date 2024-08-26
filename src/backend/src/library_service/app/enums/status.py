@@ -1,7 +1,6 @@
-from enum import Enum
+from strenum import StrEnum
 
-
-class ConditionStatus(str, Enum):
+class ConditionStatus(StrEnum):
   EXCELLENT = 'EXCELLENT'
   GOOD = 'GOOD'
   BAD = 'BAD'

@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status
 from fastapi.responses import Response
 
-from enums.responses import RespManageEnum
+from schemas.api_response import ApiResponses
+from enums.enums import DomainEnum
 
 
 router = APIRouter(
@@ -15,7 +16,7 @@ router = APIRouter(
   status_code=status.HTTP_200_OK,
   response_class=Response,
   responses={
-      status.HTTP_200_OK: RespManageEnum.Health.value,
+      status.HTTP_200_OK: ApiResponses.health(DomainEnum.RATING),
   }
 )
 async def health():

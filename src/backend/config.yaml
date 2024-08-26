@@ -1,4 +1,10 @@
 databases:
+  auth_db:
+    user: postgres
+    password: password
+    db: auth
+    host: pg_db
+    port: 5432
   library_db:
     user: postgres
     password: password
@@ -19,6 +25,13 @@ databases:
     port: 5432
 
 services:
+  auth:
+    host: "0.0.0.0"
+    network_host: auth_service
+    port: 8888
+    log_level: "info"
+    reload: True
+    kid: "1"
   library:
     host: "0.0.0.0"
     port: 8060

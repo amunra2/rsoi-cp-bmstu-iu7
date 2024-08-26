@@ -1,3 +1,5 @@
+from typing import Annotated, List
+from fastapi import Query
 from pydantic import BaseModel, constr, conint
 from uuid import UUID
 
@@ -5,23 +7,23 @@ from enums.status import ConditionStatus
 
 
 class BookBase(BaseModel):
-    name: constr(max_length=255)
-    author: constr(max_length=255)
-    genre: constr(max_length=255)
+    name: Annotated[str, constr(max_length=255)]
+    author: Annotated[str, constr(max_length=255)]
+    genre: Annotated[str, constr(max_length=255)]
     condition: ConditionStatus
 
 
 class BookFilter(BaseModel):
-    name: constr(max_length=255) | None = None
-    author: constr(max_length=255) | None = None
-    genre: constr(max_length=255) | None = None
-    condition: ConditionStatus | None = None
+  name: Annotated[str | None, Query(max_length=255)] = None
+  author: Annotated[str | None, Query(max_length=255)] = None
+  genre: Annotated[str | None, Query(max_length=255)] = None
+  condition: ConditionStatus | None = None
     
 
 class BookUpdate(BaseModel):
-    name: constr(max_length=255) | None = None
-    author: constr(max_length=255) | None = None
-    genre: constr(max_length=255) | None = None
+    name: Annotated[str, constr(max_length=255)] | None = None
+    author: Annotated[str, constr(max_length=255)] | None = None
+    genre: Annotated[str, constr(max_length=255)] | None = None
     condition: ConditionStatus | None = None
 
 
@@ -39,7 +41,7 @@ class BookInfo(BookBase):
 
 
 class BookPaginationResponse(BaseModel):
-  page: conint(ge=1)
-  pageSize: conint(ge=1)
-  totalElements: conint(ge=0)
-  items: list[BookInfo]
+  page: Annotated[int, conint(ge=1)]
+  pageSize: Annotated[int, conint(ge=1)]
+  totalElements: Annotated[int, conint(ge=0)]
+  items: List[BookInfo]

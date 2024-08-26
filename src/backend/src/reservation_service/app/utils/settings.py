@@ -1,20 +1,67 @@
+from pathlib import Path
+from pydantic import BaseModel
 from yaml import safe_load
+from utils.consts import *
 
+BASE_DIR = Path(__file__).parent.parent
 CONFIG_PATH = "config.yaml"
 
 
-def get_settings(config_name: str=CONFIG_PATH):
+class ServiceSettings(BaseModel):
+  host: str = None
+  port: int = None
+  log_level: str = None
+  reload: bool = None
+
+class DatabaseSettings(BaseModel):
+  user: str = None
+  password: str = None
+  host: str = None
+  port: int = None
+  db_name: str = None
+  
+class JWKSSettings(BaseModel):
+  host: str = None
+  port: int = None
+  kid: str = None
+  
+class SettingOptions(BaseModel):
+  service: ServiceSettings = ServiceSettings()
+  database: DatabaseSettings = DatabaseSettings()
+  jwks: JWKSSettings = JWKSSettings()
+
+class Settings():
+  options: SettingOptions = SettingOptions()
+
+  def __init__(self, config_name: str=CONFIG_PATH):
     with open(config_name, 'r') as f:
-        data = safe_load(f)
+      data = safe_load(f)
 
-    return data
+    try:
+      currentServiceData = data[SERVICE+S_SUFFIX][RESERVATION]
+      Settings.options.service.host = currentServiceData[HOST]
+      Settings.options.service.port = currentServiceData[PORT]
+      Settings.options.service.log_level = currentServiceData[LOG_LEVEL]
+      Settings.options.service.reload = currentServiceData[RELOAD]
 
-
-def get_db_url(config_name: str=CONFIG_PATH):
-    settings = get_settings(config_name) 
+      currentDatabaseData = data[DATABASES][RESERVATION+DB_SUFFIX]
+      Settings.options.database.user = currentDatabaseData[USER]
+      Settings.options.database.password = currentDatabaseData[PASSWORD]
+      Settings.options.database.host = currentDatabaseData[HOST]
+      Settings.options.database.port = currentDatabaseData[PORT]
+      Settings.options.database.db_name = currentDatabaseData[DB_NAME]
+      
+      authServiceData = data[SERVICE+S_SUFFIX][AUTH]
+      Settings.options.jwks.host = authServiceData[NETWORK_HOST]
+      Settings.options.jwks.port = authServiceData[PORT]
+      Settings.options.jwks.kid = authServiceData[JWKS_KID]
+    except KeyError as e:
+      print(f"SETTINGS: no argument {e}")
+    else:
+      Settings.__log()
+      
+  def __log():
+    print(f"\n{Settings.options.model_dump_json(indent=2)}\n")
     
-    return f"postgresql://{settings['databases']['reservation_db']['user']}:"\
-                        f"{settings['databases']['reservation_db']['password']}@"\
-                        f"{settings['databases']['reservation_db']['host']}:"\
-                        f"{settings['databases']['reservation_db']['port']}/"\
-                        f"{settings['databases']['reservation_db']['db']}"
+
+settings = Settings() # TODO: 2 раза при первом запуске
