@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* COLORS */
+  --primary-color: #6366f1; /* tailwind: indigo-500 */
+  --secondary-color: #64748b ; /* tailwind: slate-500 */
+  --third-color: #f1f5f9; /* tailwind: slate-100 */
+
+  /* FONT SIZE */
+  --large-size: 36px; /* tailwind: 4xl */
+  --high-size: 30px; /* tailwind: 3xl */
+  --medium-size: 20px; /* tailwind: xl */
+  --little-size: 16px; /* tailwind: base */
+  --mini-size: 12px; /* tailwind: xs */
+
+  /* LINE HEIGHT */
+  --large-height: 40px; /* tailwind: 4xl */
+  --high-height: 36px; /* tailwind: 3xl */
+  --medium-height: 28px; /* tailwind: xl */
+  --little-height: 24px; /* tailwind: base */
+  --mini-height: 16px; /* tailwind: xs */
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

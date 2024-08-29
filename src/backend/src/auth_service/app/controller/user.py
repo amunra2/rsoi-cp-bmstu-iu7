@@ -148,7 +148,7 @@ async def get_all_users(
   filter: UserFilterDto = Depends(),
   page: Annotated[int, Query(ge=1)] = 1,
   size: Annotated[int, Query(ge=1)] = 100,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.MODERATOR])),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.MODERATOR])),
 ) -> UserPaginationResponse:
   return await user_service.get_all(
     filter=filter,
