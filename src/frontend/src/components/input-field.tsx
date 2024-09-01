@@ -6,23 +6,30 @@ import {MyTheme} from "../theme-mui";
 interface InputFieldProps {
   label: string;
   value: string;
+  isRequired?: boolean;
   setValue: (value: string) => void;
 }
 
-export default function InputField(props: InputFieldProps) {
+export default function InputField({
+  label,
+  value, 
+  isRequired = false,
+  setValue,
+}: InputFieldProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    props.setValue(event.target.value);
+    setValue(event.target.value);
   }
 
   return (
     <ThemeProvider theme={MyTheme}>
       <TextField
-      id="filled-required"
-      label={props.label}
-      variant="filled"
-      value={props.value}
-      onChange={handleChange}
-    />
+        required={isRequired}
+        id="filled-required"
+        label={label}
+        variant="filled"
+        value={value}
+        onChange={handleChange}
+      />
     </ThemeProvider>
   )
 }

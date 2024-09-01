@@ -6,24 +6,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary-color": "var(--primary-color)",
-        "secondary-color": "var(--secondary-color)",
-        "third-color": "var(--third-color)",
-        "forth-color": "var(--forth-color)",
+        "my-primary-color": "var(--my-primary-color)",
+        "my-secondary-color": "var(--my-secondary-color)",
+        "my-third-color": "var(--my-third-color)",
       },
       fontSize: {
-        "large-size": "var(--large-size)",
-        "high-size": "var(--high-size)",
-        "medium-size": "var(--medium-size)",
-        "little-size": "var(--little-size)",
-        "mini-size": "var(--mini-size)",
+        "my-large-size": "var(--large-size)",
+        "my-high-size": "var(--high-size)",
+        "my-medium-size": "var(--medium-size)",
+        "my-little-size": "var(--little-size)",
+        "my-mini-size": "var(--mini-size)",
       },
       lineHeight: {
-        "large-height": "var(--large-height)",
-        "high-height": "var(--high-height)",
-        "medium-height": "var(--medium-height)",
-        "little-height": "var(--little-height)",
-        "mini-height": "var(--mini-height)",
+        "my-large-height": "var(--my-large-height)",
+        "my-high-height": "var(--my-high-height)",
+        "my-medium-height": "var(--my-medium-height)",
+        "my-little-height": "var(--my-little-height)",
+        "my-mini-height": "var(--my-mini-height)",
       }
     },
   },

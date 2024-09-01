@@ -1,8 +1,7 @@
-import { LoginPage } from './pages/login';
 
 function App() {
   return (
-    <div><LoginPage /></div>
+    <div>HUI</div>
   );
 }
 

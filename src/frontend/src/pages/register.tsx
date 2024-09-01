@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthService from "../services/auth-service";
 import InputField from "../components/input-field";
 import Box from '@mui/material/Box';
@@ -14,15 +14,21 @@ import { MyTheme } from "../theme-mui";
 import { useNavigate } from "react-router-dom";
 
 
-export function LoginPage() {
+export function RegisterPage() {
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [lastname, setLastname] = useState<string>("");
+  const [firstname, setFirstname] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
   const navigate = useNavigate();
 
   const auth = async () => {
-    if (login && password) {
-      const response = await AuthService.login(login, password);
+    if (login && password && email && phone && lastname && firstname) {
+      const response = await AuthService.register({
+        login, password, email, phone, lastname, firstname
+      });
 
       if (typeof response === "string") {
         setErrorMsg(response);
@@ -36,35 +42,46 @@ export function LoginPage() {
     }
   }; //  border border-red-700
 
-  const logout = async () => {
-    localStorage.clear();
-  }
-
-  // useEffect(() => {
-  //   console.log("sdsdsd");
-  //   if (localStorage.getItem(`accessToken`)) {
-  //     navigate("/");
-  //   }
-  // });
+  useEffect(() => {
+    console.log("sdsdsd");
+    if (localStorage.getItem(`accessToken`)) {
+      navigate("/");
+    }
+  });
 
   return (
     <div className="flex justify-center items-center h-screen bg-my-primary-color">
       <Box
-        className="flex flex-col gap-3 bg-my-third-color rounded-md p-6 max-w-md"
+        className="flex flex-col gap-3 text-wrap bg-my-third-color rounded-md p-6 max-w-md"
         component="form"
       >
-        <WebsiteLogo size="high" />
+        <WebsiteLogo size={"high"} />
 
-        <Text size="large" className="flex justify-center mt-7 mb-1 text-my-secondary-color">
-          Авторизоваться
+        <Text
+          size="large"
+          className="flex justify-center mt-7 mb-1 text-my-secondary-color text-my-large-size"
+        >
+          Зарегистрироваться
         </Text>
 
         <div className="grid grid-cols-2 gap-4">
-          <InputField label="Логин" value={login} setValue={(value: string) => {
+          <InputField isRequired={true} label="Логин" value={login} setValue={(value: string) => {
             setLogin(value);
           }}/>
-          <InputPassword value={password} setValue={(value: string) => {
+          <InputField isRequired={true} label="Пароль" value={password} setValue={(value: string) => {
             setPassword(value);
+          }}/>
+          <InputField isRequired={true} label="Почта" value={email} setValue={(value: string) => {
+            setEmail(value);
+          }}/>
+          <InputField isRequired={true} label="Телефон" value={phone} setValue={(value: string) => {
+            setPhone(value);
+          }}/>
+          <InputField isRequired={true} label="Фамилия" value={lastname} setValue={(value: string) => {
+            setLastname(value);
+          }}/>
+          <InputField isRequired={true} label="Имя" value={firstname} setValue={(value: string) => {
+            setFirstname(value);
           }}/>
         </div>
 
@@ -99,10 +116,10 @@ export function LoginPage() {
             className="flex justify-center"
             color="secondary"
             sx={{fontSize: "var(--my-little-size)"}}
-            href="/register"
+            href="/login"
             underline="hover"
           >
-            Зарегистрироваться
+            Залогиниться
           </Link>
         </ThemeProvider>
       </Box>

@@ -6,20 +6,20 @@ interface WebsiteLogoProps {
   size: "mini" | "little" | "medium" | "high" | "large";
 }
 
-export default function WebsiteLogo({size}: WebsiteLogoProps) {
+export function WebsiteLogo({size}: WebsiteLogoProps) {
   return (
     <a 
       href="/"
-      className="flex flex-row gap-4 border justify-center bg-secondary-color p-1 rounded-md"
+      className="flex flex-row gap-4 border justify-center bg-my-secondary-color p-1 rounded-md"
     >
       <Text size={size}
-        className={`text-third-color h-fit`}
+        className={`text-my-third-color`}
       >
         LibraREALLY
       </Text>
       <MenuBookIcon
-        style={{fontSize: `var(--large-size)`, lineHeight: `var(--${size}-height)`}}
-        className="text-third-color" 
+        style={{fontSize: `var(--my-${size}-size)`, lineHeight: `var(--my-${size}-height)`}}
+        className="text-my-third-color" 
       />
     </a>
   )
