@@ -30,11 +30,9 @@ export function RegisterPage() {
         login, password, email, phone, lastname, firstname
       });
 
-      if (typeof response === "string") {
+      if (response) {
         setErrorMsg(response);
       } else {
-        localStorage.setItem(`accessToken`, response.data.access_token as string);
-        localStorage.setItem(`refreshToken`, response.data.refresh_token as string);
         navigate("/");
       }
     } else {

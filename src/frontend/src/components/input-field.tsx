@@ -13,8 +13,8 @@ interface InputFieldProps {
 export default function InputField({
   label,
   value, 
-  isRequired = false,
   setValue,
+  isRequired = false,
 }: InputFieldProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);

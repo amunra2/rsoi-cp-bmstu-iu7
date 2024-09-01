@@ -10,7 +10,7 @@ export function WebsiteLogo({size}: WebsiteLogoProps) {
   return (
     <a 
       href="/"
-      className="flex flex-row gap-4 border justify-center bg-my-secondary-color p-1 rounded-md"
+      className="flex flex-row gap-x-2 border justify-center bg-my-secondary-color p-1 rounded-md"
     >
       <Text size={size}
         className={`text-my-third-color`}

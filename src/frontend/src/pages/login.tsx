@@ -24,21 +24,15 @@ export function LoginPage() {
     if (login && password) {
       const response = await AuthService.login(login, password);
 
-      if (typeof response === "string") {
+      if (response) {
         setErrorMsg(response);
       } else {
-        localStorage.setItem(`accessToken`, response.data.access_token as string);
-        localStorage.setItem(`refreshToken`, response.data.refresh_token as string);
         navigate("/");
       }
     } else {
       setErrorMsg("Ошибка: Не все поля заполнены");
     }
   }; //  border border-red-700
-
-  const logout = async () => {
-    localStorage.clear();
-  }
 
   // useEffect(() => {
   //   console.log("sdsdsd");

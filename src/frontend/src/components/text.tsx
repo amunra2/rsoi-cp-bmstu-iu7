@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react'
 
 interface TextProps {
   size: "mini" | "little" | "medium" | "high" | "large";
-  className: string;
+  className?: string;
 }
 
 export default function Text({size, className, children}: PropsWithChildren<TextProps>) {

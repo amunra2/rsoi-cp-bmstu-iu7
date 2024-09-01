@@ -13,8 +13,8 @@ interface CreateUserDto {
 }
 
 export default class AuthService {
-  static async login(login: string, password: string): Promise<AxiosResponse<AuthResponse> | string>  {
-    return $apiAuth.post<AuthResponse>(
+  static async login(login: string, password: string): Promise<string | null>  {
+    const response = await $apiAuth.post<AuthResponse>(
       "user/login/",
       {login, password},
     ).catch((error) => {
@@ -37,10 +37,18 @@ export default class AuthService {
 
       return errorMessage;
     });
+
+    if (typeof response === "string") {
+      return response;
+    } else {
+      localStorage.setItem(`accessToken`, response.data.access_token as string);
+      localStorage.setItem(`refreshToken`, response.data.refresh_token as string);
+      return null;
+    }
   }
 
-  static async register({...registerDto}: CreateUserDto): Promise<AxiosResponse<AuthResponse> | string>  { 
-    return $apiAuth.post<AuthResponse>(
+  static async register({...registerDto}: CreateUserDto): Promise<string | null>  { 
+    const response = await $apiAuth.post<AuthResponse>(
       "user/register/",
       {...registerDto, role: "USER"},
     ).catch((error) => {
@@ -63,5 +71,22 @@ export default class AuthService {
 
       return errorMessage;
     });
+
+    if (typeof response === "string") {
+      return response;
+    } else {
+      localStorage.setItem(`accessToken`, response.data.access_token as string);
+      localStorage.setItem(`refreshToken`, response.data.refresh_token as string);
+      return null;
+    }
+  }
+
+  static logout(): undefined {
+    localStorage.clear();
+    return;
+  }
+
+  static isAuth(): boolean {
+    return !!localStorage.getItem(`accessToken`);
   }
 }
