@@ -8,12 +8,14 @@ interface InputFieldProps {
   value: string;
   isRequired?: boolean;
   setValue: (value: string) => void;
+  className?: string;
 }
 
 export default function InputField({
   label,
   value, 
   setValue,
+  className,
   isRequired = false,
 }: InputFieldProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +30,7 @@ export default function InputField({
         label={label}
         variant="filled"
         value={value}
+        className={className}
         onChange={handleChange}
       />
     </ThemeProvider>

@@ -12,7 +12,6 @@ import Alert from '@mui/material/Alert';
 import { ThemeProvider } from "@emotion/react";
 import { MyTheme } from "../theme-mui";
 import { useNavigate } from "react-router-dom";
-import UserService from "../services/user-service";
 
 
 export function LoginPage() {

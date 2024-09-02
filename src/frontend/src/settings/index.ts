@@ -6,12 +6,12 @@ class Settings {
     port: 8888,
   }
 
-  public ratingService: ServiceSettings = {
-    host: "",
-    port: 1111,
+  public libraryService: ServiceSettings = {
+    host: "localhost",
+    port: 8060,
   }
 
-  public libraryService: ServiceSettings = {
+  public ratingService: ServiceSettings = {
     host: "",
     port: 1111,
   }
@@ -22,9 +22,11 @@ class Settings {
   }
 
   public gatewayService: ServiceSettings = {
-    host: "",
-    port: 1111,
+    host: "localhost",
+    port: 8080,
   }
+
+  public defaultPageSize: number = 4;
 }
 
 const settings = new Settings();

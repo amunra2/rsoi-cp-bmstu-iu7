@@ -9,8 +9,8 @@ databases:
     user: postgres
     password: password
     db: libraries
-    host: pg_db
-    port: 5432
+    host: localhost #pg_db
+    port: 5434 # 5432
   rating_db:
     user: postgres
     password: password
@@ -27,7 +27,7 @@ databases:
 services:
   auth:
     host: "0.0.0.0"
-    network_host: auth_service
+    network_host: localhost #auth_service
     port: 8888
     log_level: "info"
     reload: True
@@ -54,6 +54,6 @@ services:
     reload: True
     max_num_of_fails: 2
     timeout: 10
-    library_host: library_service
+    library_host: localhost #library_service
     rating_host: rating_service
     reservation_host: reservation_service
