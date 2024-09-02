@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Main() {
+export default function MainPage() {
   return (
     <div>Main Page</div>
   )

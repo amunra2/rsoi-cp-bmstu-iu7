@@ -1,6 +1,7 @@
 import { AxiosResponse, isAxiosError } from "axios";
 import {$apiAuth} from "../http";
 import { AuthResponse } from "../model/response/auth.response";
+import UserService from "./user-service";
 
 interface CreateUserDto {
   login: string;
@@ -43,6 +44,18 @@ export default class AuthService {
     } else {
       localStorage.setItem(`accessToken`, response.data.access_token as string);
       localStorage.setItem(`refreshToken`, response.data.refresh_token as string);
+
+      const user = await UserService.getMe();
+
+      if (!user) {
+        AuthService.logout();
+        return "Ошибка: Не удалось получить данные пользователя";
+      }
+
+      localStorage.setItem(`userUuid`, user?.uuid as string);
+      localStorage.setItem(`userLogin`, user?.login as string);
+      localStorage.setItem(`userRole`, user?.role as string);
+
       return null;
     }
   }
@@ -88,5 +101,9 @@ export default class AuthService {
 
   static isAuth(): boolean {
     return !!localStorage.getItem(`accessToken`);
+  }
+
+  static isAdmin(): boolean {
+    return AuthService.isAuth() && localStorage.getItem(`userRole`) === "ADMIN";
   }
 }

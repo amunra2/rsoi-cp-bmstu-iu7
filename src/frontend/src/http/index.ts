@@ -48,7 +48,7 @@ export const $apiUser = axios.create({
 });
 
 $apiUser.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
   return config;
 });
 
@@ -62,7 +62,7 @@ $apiUser.interceptors.response.use((config: AxiosResponse) => {
       const data = {
         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
       };
-      const response = await $apiAuth.post<AuthResponse>(`/refresh`, data);
+      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
       return $apiUser.request(originalRequest);
     } catch (e) {
@@ -79,7 +79,7 @@ export const $apiLibrary = axios.create({
 });
 
 $apiLibrary.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
   return config;
 });
 
@@ -93,7 +93,7 @@ $apiLibrary.interceptors.response.use((config: AxiosResponse) => {
       const data = {
         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
       };
-      const response = await $apiAuth.post<AuthResponse>(`/refresh`, data);
+      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
       return $apiLibrary.request(originalRequest);
     } catch (e) {
@@ -110,7 +110,7 @@ export const $apiRating = axios.create({
 });
 
 $apiRating.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
   return config;
 });
 
@@ -124,7 +124,7 @@ $apiRating.interceptors.response.use((config: AxiosResponse) => {
       const data = {
         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
       };
-      const response = await $apiAuth.post<AuthResponse>(`/refresh`, data);
+      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
       return $apiRating.request(originalRequest);
     } catch (e) {
@@ -141,7 +141,7 @@ export const $apiReservation = axios.create({
 });
 
 $apiReservation.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
   return config;
 });
 
@@ -155,7 +155,7 @@ $apiReservation.interceptors.response.use((config: AxiosResponse) => {
       const data = {
         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
       };
-      const response = await $apiAuth.post<AuthResponse>(`/refresh`, data);
+      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
       return $apiReservation.request(originalRequest);
     } catch (e) {
@@ -172,7 +172,7 @@ export const $apiGateway = axios.create({
 });
 
 $apiGateway.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
   return config;
 });
 
@@ -186,7 +186,7 @@ $apiGateway.interceptors.response.use((config: AxiosResponse) => {
       const data = {
         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
       };
-      const response = await $apiAuth.post<AuthResponse>(`/refresh`, data);
+      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
       return $apiGateway.request(originalRequest);
     } catch (e) {

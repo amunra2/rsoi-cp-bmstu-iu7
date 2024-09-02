@@ -46,11 +46,15 @@ export default function NavBar() {
   const logoutButtonUserMenu = () => {
     handleCloseUserMenu();
     AuthService.logout();
-    navigate(0);
+    navigate("/");
   };
 
   const goToLoginPage = () => {
     navigate(`/login`);
+  }
+
+  const goToProfilePage = () => {
+    navigate("/profile");
   }
 
   return (
@@ -149,6 +153,9 @@ export default function NavBar() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
+                  <MenuItem onClick={goToProfilePage}>
+                    <Text size="little">Профиль</Text>
+                  </MenuItem>
                   <MenuItem onClick={logoutButtonUserMenu}>
                     <Text size="little">Выйти</Text>
                   </MenuItem>
