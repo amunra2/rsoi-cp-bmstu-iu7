@@ -59,16 +59,16 @@ class GatewayService():
 
   async def get_all_libraries_in_city(
     self,
-    city: str,
+    city: str | None = None,
     page: int = 1,
     size: int = 100,
-    token: HTTPAuthorizationCredentials | None = None,
+    # token: HTTPAuthorizationCredentials | None = None,
   ):
     libraries = await self._libraryCRUD.get_all_libraries(
       page=page,
       size=size,
       city=city,
-      token=token,
+      # token=token,
     )
 
     return LibraryPaginationResponse(
@@ -85,12 +85,12 @@ class GatewayService():
     show_all: bool = False,
     page: int = 1,
     size: int = 100,
-    token: HTTPAuthorizationCredentials | None = None,
+    # token: HTTPAuthorizationCredentials | None = None,
   ):
     library_books = await self._libraryCRUD.get_all_library_books(
       page=page,
       size=size,
-      token=token,
+      # token=token,
     )
 
     library_book_items: list[LibraryBookResponse] = []

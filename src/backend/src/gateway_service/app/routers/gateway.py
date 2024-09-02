@@ -71,17 +71,17 @@ router = APIRouter(
 )
 async def get_all_libraries_in_city(
   gateway_service: Annotated[GatewayService, Depends(get_gateway_service)],
-  city: Annotated[str, Query(max_length=80)],
+  city: Annotated[str, Query(max_length=80)] | None = None,
   page: Annotated[int, Query(ge=1)] = 1,
   size: Annotated[int, Query(ge=1)] = 100,
-  token: HTTPAuthorizationCredentials | None = Depends(http_bearer),
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # token: HTTPAuthorizationCredentials | None = Depends(http_bearer),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await gateway_service.get_all_libraries_in_city(
     city=city,
     page=page,
     size=size,
-    token=token,
+    # token=token,
   )
 
 
@@ -99,15 +99,15 @@ async def get_books_in_library(
   showAll: bool = False,
   page: Annotated[int, Query(ge=1)] = 1,
   size: Annotated[int, Query(ge=1)] = 100,
-  token: HTTPAuthorizationCredentials | None = Depends(http_bearer),
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # token: HTTPAuthorizationCredentials | None = Depends(http_bearer),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await gateway_service.get_books_in_library(
     library_uid=libraryUid,
     show_all=showAll,
     page=page,
     size=size,
-    token=token,
+    # token=token,
   )
 
 

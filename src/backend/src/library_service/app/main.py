@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
 
 from routers.api import router as api_router
 from utils.database import create_tables
@@ -44,6 +45,15 @@ app = FastAPI(
   title="Library Service",
   version="v1",
 )
+
+app.add_middleware(
+  CORSMiddleware,
+  allow_credentials=True,
+  allow_origins=['*'],
+  allow_methods=['*'],
+  allow_headers=['*'],
+)
+
 app.include_router(api_router, prefix="/api/v1")
 app.openapi = custom_openapi
 
