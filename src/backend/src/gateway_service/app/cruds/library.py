@@ -75,7 +75,7 @@ class LibraryCRUD(BaseCRUD):
     page: int = 1,
     size: int = 100,
     # token: HTTPAuthorizationCredentials | None = None,
-  ) -> list[LibraryBookEntityResponse]:
+  ) -> list[list[LibraryBookEntityResponse], int]:
     # validate_token_exists(token)
     
     response: Response = CircuitBreaker.send_request(
@@ -117,7 +117,7 @@ class LibraryCRUD(BaseCRUD):
         )
       )
 
-    return library_book_items
+    return library_book_items, library_books_json["totalElements"]
   
 
   async def get_library_by_uid(

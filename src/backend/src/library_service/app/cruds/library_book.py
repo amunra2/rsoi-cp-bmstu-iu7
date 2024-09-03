@@ -13,7 +13,7 @@ class LibraryBookCRUD():
       filter: LibraryBookFilter,
       offset: int = 0,
       limit: int = 100,
-  ) -> list[LibraryBookModel]:
+  ) -> list[list[LibraryBookModel], int]:
     library_books = self._db.query(LibraryBookModel).join(LibraryBookModel.book).join(LibraryBookModel.library)
     library_books = await self.__filter_library_books(library_books, filter)
     total = library_books.count()

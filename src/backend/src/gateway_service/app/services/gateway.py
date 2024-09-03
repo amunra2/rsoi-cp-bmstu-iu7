@@ -87,16 +87,19 @@ class GatewayService():
     size: int = 100,
     # token: HTTPAuthorizationCredentials | None = None,
   ):
-    library_books = await self._libraryCRUD.get_all_library_books(
-      page=page,
-      size=size,
+    library_books, _ = await self._libraryCRUD.get_all_library_books(
+      page=1,
+      size=1e10,
       # token=token,
     )
+    
+    books_in_library_count = 0
 
     library_book_items: list[LibraryBookResponse] = []
     for library_book in library_books:
       if library_book.library.libraryUid == library_uid:
         if library_book.availableCount != 0 or show_all == True:
+          books_in_library_count += 1
           library_book_items.append(
             LibraryBookResponse(
               name=library_book.book.name,
@@ -111,8 +114,8 @@ class GatewayService():
     return LibraryBookPaginationResponse(
       page=page,
       pageSize=size,
-      totalElements=len(library_book_items),
-      items=library_book_items[(page - 1) * size : page * size]
+      totalElements=books_in_library_count,
+      items=library_book_items[(page - 1) * size : page * size],
     )
   
   
@@ -401,7 +404,7 @@ class GatewayService():
     bookUid: UUID,
     token: HTTPAuthorizationCredentials | None = None,
   ) -> LibraryBookEntityResponse:
-    library_books = await self._libraryCRUD.get_all_library_books(
+    library_books, _ = await self._libraryCRUD.get_all_library_books(
       size=sys.maxsize,
       token=token,
     )
