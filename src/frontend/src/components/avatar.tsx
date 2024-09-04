@@ -5,6 +5,7 @@ interface MyAvatarProps {
   lastname?: string;
   firstname?: string;
   size: number;
+  className?: string;
 }
 
 function stringToColor(string: string) {
@@ -39,12 +40,12 @@ function stringAvatar(name: string, size: number) {
   };
 }
 
-export default function MyAvatar({lastname, firstname, children, size}: PropsWithChildren<MyAvatarProps>) {
+export default function MyAvatar({lastname, firstname, children, size, className}: PropsWithChildren<MyAvatarProps>) {
   return (
     <div>
       {(lastname && firstname) ? 
-        <Avatar {...stringAvatar(`${lastname} ${firstname}`, size)}></Avatar> :
-        <Avatar sx={{height: size, width: size, fontSize: size / 2}}>{children}</Avatar>}
+        <Avatar className={className} {...stringAvatar(`${lastname} ${firstname}`, size)}></Avatar> :
+        <Avatar className={className} sx={{height: size, width: size, fontSize: size / 2}}>{children}</Avatar>}
     </div>
   )
 }

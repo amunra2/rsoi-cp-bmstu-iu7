@@ -5,7 +5,6 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import BooksPage from "./books";
 import { ThemeProvider } from "@mui/material";
 import { MyTheme } from "../theme-mui";
@@ -13,11 +12,9 @@ import { LibraryInterface } from "../model/interface/library.interface";
 import { BookInterface } from "../model/interface/book.interface";
 import ReservePage from "./reserve";
 import Text from "../components/text";
-import ButtonGroup from '@mui/material/ButtonGroup';
-import MultilineText from "../components/multiline-text";
 import AuthService from "../services/auth-service";
 import Alert from '@mui/material/Alert';
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import GatewayService from "../services/gateway-service";
 
 const steps = ['Выберите библиотеку', 'Выберите книгу', 'Забронируйте книгу'];
@@ -33,13 +30,17 @@ export default function MainPage() {
 
   const handleReserve = async () => {
     if (AuthService.isAuth() && agreed && chosenEndTime) {
-      const _ = await GatewayService.reserveBook({
+      const response = await GatewayService.reserveBook({
         libraryUuid: chosenLibrary?.libraryUid as string,
         booUuid: chosenBook?.bookUid as string,
         tillDate: chosenEndTime,
       })
 
-      handleNext();
+      if (typeof response === "string") {
+        setErrorMsg(response);
+      } else {
+        // handleNext();
+      }
     } else {
       setErrorMsg("Ошибка: Чтобы забронировать книгу, нужно авторизоваться");
     }

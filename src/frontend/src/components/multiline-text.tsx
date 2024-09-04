@@ -1,22 +1,21 @@
-import React from 'react'
+import React, { Children } from 'react'
 import Text from './text';
 
 interface MultilineTextProps {
-  text: string;
   size: "mini" | "little" | "medium" | "high" | "large";
   className?: string;
 }
 
-export default function MultilineText({text, size, className}: MultilineTextProps) {
+export default function MultilineText({size, className, children}: React.PropsWithChildren<MultilineTextProps>) {
+  const chlidrenArray = Children.toArray(children);
   return (
-    <div className={className}>
-      {text.split(" ").map(w => 
+    <div className={`flex flex-col ${className}`}>
+      {chlidrenArray.map((c, index) => 
         <Text
-          key="w" 
+          key={index}
           size={size}
-          // className={className}
         >
-          {w}
+          {c}
         </Text>
       )}
     </div>

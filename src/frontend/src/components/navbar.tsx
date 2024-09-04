@@ -57,6 +57,10 @@ export default function NavBar() {
     navigate("/profile");
   }
 
+  const goToAboutPage = () => {
+    navigate("/about");
+  }
+
   return (
     <ThemeProvider theme={MyTheme}>
       <AppBar position="static" color="primary">
@@ -155,6 +159,9 @@ export default function NavBar() {
                 >
                   <MenuItem onClick={goToProfilePage}>
                     <Text size="little">Профиль</Text>
+                  </MenuItem>
+                  <MenuItem onClick={goToAboutPage}>
+                    <Text size="little">О сайте</Text>
                   </MenuItem>
                   <MenuItem onClick={logoutButtonUserMenu}>
                     <Text size="little">Выйти</Text>

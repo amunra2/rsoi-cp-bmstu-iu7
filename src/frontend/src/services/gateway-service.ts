@@ -1,8 +1,10 @@
+import { isAxiosError } from "axios";
 import {$apiGateway} from "../http";
 import { BookFilter, BookResponseInterface } from "../model/interface/book.interface";
 import { LibraryResponseInterface, LibraryFilter } from "../model/interface/library.interface";
 import { TakeBookRequest } from "../model/request/reservation.request";
 import { TakeBookResponse } from "../model/response/reservation.response";
+import { RatingInterface } from "../model/interface/rating.interface";
 
 export default class GatewayService {
   static async getLibraries(filters?: LibraryFilter): Promise<LibraryResponseInterface | undefined> {
@@ -37,16 +39,43 @@ export default class GatewayService {
     }
   }
 
-  static async reserveBook(request: TakeBookRequest): Promise<TakeBookResponse | undefined> {
-    try {
-      const response = await $apiGateway.post<TakeBookResponse>(`/reservations/`,
-        {
-          libraryUid: request.libraryUuid,
-          bookUid: request.booUuid,
-          tillDate: request.tillDate.format("YYYY-MM-DD"),
+  static async reserveBook(request: TakeBookRequest): Promise<TakeBookResponse | string> {
+    const response = await $apiGateway.post<TakeBookResponse>(`/reservations/`,
+      {
+        libraryUid: request.libraryUuid,
+        bookUid: request.booUuid,
+        tillDate: request.tillDate.format("YYYY-MM-DD"),
+      }
+    ).catch((error) => {
+      var errorMessage: string;
+      if (isAxiosError(error)) {
+        if (error.response && error.response.status === 400) {
+          errorMessage = `Ошибка: Эта книга в библиотеке закончилась`;
+        } else {
+          errorMessage = `${error}`;
         }
-      );
-      return response.data;
+        console.log(error);
+      } else {
+        errorMessage = `NOT AXIOS: ${error}`;
+        console.log(`NOT AXIOS: ${error}`);
+      }
+
+      return errorMessage;
+    });
+
+    if (typeof response === "string") {
+      return response;
+    } else {
+      const reservation = response.data;
+      return reservation;
+    }
+  }
+
+  static async getUserRating(): Promise<RatingInterface | undefined> {
+    try {
+      const response = await $apiGateway.get<RatingInterface>(`/rating/`);
+      const rating = response.data;
+      return rating;
     } catch (e) {
       console.log(e);
     }

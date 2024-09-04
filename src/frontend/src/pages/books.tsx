@@ -1,22 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
+import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Text from '../components/text';
 import Pagination from '@mui/material/Pagination';
-import { LibraryResponseInterface } from '../model/interface/library.interface';
-import LibraryService from '../services/library-service';
 import GatewayService from '../services/gateway-service';
-import InputField from '../components/input-field';
 import { ThemeProvider } from '@mui/material';
 import { MyTheme } from '../theme-mui';
 import Alert from '@mui/material/Alert';
 import settings from "../settings";
 import { BookInterface, BookResponseInterface } from '../model/interface/book.interface';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import BookCard from '../components/book-card';
 
@@ -120,21 +114,21 @@ export default function BooksPage({libraryName, libraryUuid, setValue}: BookPage
             className="flex flex-col hover:bg-slate-200"
             sx={{ backgroundColor: "var(--my-third-color)", minWidth: 320, maxWidth: 320, maxHeight: 300, minHeight: 300, margin: 1.5, textWrap: "wrap"}}
           >
-          <CardContent>
-            <BookCard book={b} />
-          </CardContent>
-          <CardActions disableSpacing sx={{ mt: "auto" }}>
-            <ThemeProvider theme={MyTheme}>
-              <Button
-                disabled={b.availableCount === 0}
-                size="small"
-                onClick={() => setValue(b)}
-              >
-                {b.availableCount === 0 ? "Закончились" : "Выбрать"}
-              </Button>
-            </ThemeProvider>
-          </CardActions>
-        </Card>
+            <CardContent>
+              <BookCard book={b} />
+            </CardContent>
+            <CardActions disableSpacing sx={{ mt: "auto" }}>
+              <ThemeProvider theme={MyTheme}>
+                <Button
+                  disabled={b.availableCount === 0}
+                  size="small"
+                  onClick={() => setValue(b)}
+                >
+                  {b.availableCount === 0 ? "Закончились" : "Выбрать"}
+                </Button>
+              </ThemeProvider>
+            </CardActions>
+          </Card>
         ))}
       </div>
     </div>
