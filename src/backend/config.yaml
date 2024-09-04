@@ -15,14 +15,14 @@ databases:
     user: postgres
     password: password
     db: ratings
-    host: pg_db
-    port: 5432
+    host: localhost #pg_db
+    port: 5434 # 5432
   reservation_db:
     user: postgres
     password: password
     db: reservations
-    host: pg_db
-    port: 5432
+    host: localhost #pg_db
+    port: 5434 # 5432
 
 services:
   auth:
@@ -55,5 +55,5 @@ services:
     max_num_of_fails: 2
     timeout: 10
     library_host: localhost #library_service
-    rating_host: rating_service
-    reservation_host: reservation_service
+    rating_host: localhost #rating_service
+    reservation_host: localhost #reservation_service

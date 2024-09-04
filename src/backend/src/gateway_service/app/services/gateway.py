@@ -214,7 +214,7 @@ class GatewayService():
     library_book = await self.__get_book_in_library(
       libraryUid=take_book_request.libraryUid,
       bookUid=take_book_request.bookUid,
-      token=token,
+      # token=token,
     )
 
     if (library_book.availableCount == 0):
@@ -402,11 +402,11 @@ class GatewayService():
     self,
     libraryUid: UUID,
     bookUid: UUID,
-    token: HTTPAuthorizationCredentials | None = None,
+    # token: HTTPAuthorizationCredentials | None = None,
   ) -> LibraryBookEntityResponse:
     library_books, _ = await self._libraryCRUD.get_all_library_books(
       size=sys.maxsize,
-      token=token,
+      # token=token,
     )
 
     library_book_items: list[LibraryBookEntityResponse] = []

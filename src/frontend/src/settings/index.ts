@@ -26,7 +26,7 @@ class Settings {
     port: 8080,
   }
 
-  public defaultPageSize: number = 4;
+  public defaultPageSize: number = 5;
 }
 
 const settings = new Settings();

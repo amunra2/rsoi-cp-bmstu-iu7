@@ -12,6 +12,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.0.0",
     "@mui/material": "^6.0.0",
+    "@mui/x-date-pickers": "^7.15.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -21,6 +22,8 @@
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
     "axios": "^1.7.5",
+    "datejs": "^1.0.0-rc3",
+    "dayjs": "^1.11.13",
     "fs": "^0.0.1-security",
     "mobx": "^6.13.1",
     "mobx-react-lite": "^4.0.7",
@@ -57,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "@types/datejs": "^0.0.36",
     "tailwindcss": "^3.4.10"
   }
 }

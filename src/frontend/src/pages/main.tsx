@@ -1,146 +1,184 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import LibrariesPage from "./libraries";
+import * as React from 'react';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Text from '../components/text';
-import Pagination from '@mui/material/Pagination';
-import { LibraryResponseInterface } from '../model/interface/library.interface';
-import LibraryService from '../services/library-service';
-import GatewayService from '../services/gateway-service';
-import InputField from '../components/input-field';
-import { ThemeProvider } from '@mui/material';
-import { MyTheme } from '../theme-mui';
+import BooksPage from "./books";
+import { ThemeProvider } from "@mui/material";
+import { MyTheme } from "../theme-mui";
+import { LibraryInterface } from "../model/interface/library.interface";
+import { BookInterface } from "../model/interface/book.interface";
+import ReservePage from "./reserve";
+import Text from "../components/text";
+import ButtonGroup from '@mui/material/ButtonGroup';
+import MultilineText from "../components/multiline-text";
+import AuthService from "../services/auth-service";
 import Alert from '@mui/material/Alert';
-import settings from "../settings";
+import dayjs, { Dayjs } from "dayjs";
+import GatewayService from "../services/gateway-service";
+
+const steps = ['Выберите библиотеку', 'Выберите книгу', 'Забронируйте книгу'];
 
 
 export default function MainPage() {
-  const [libraries, setLibraries] = useState<LibraryResponseInterface>();
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [city, setCity] = useState<string>("");
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [chosenLibrary, setChosenLibrary] = React.useState<LibraryInterface>();
+  const [chosenBook, setChosenBook] = React.useState<BookInterface>();
+  const [chosenEndTime, setChosenEndTime] = React.useState<Dayjs | null>(null);
+  const [agreed, setAgreed] = React.useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = React.useState<string>("");
 
-  const changePage = (_: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentPage(value);
-  };
+  const handleReserve = async () => {
+    if (AuthService.isAuth() && agreed && chosenEndTime) {
+      const _ = await GatewayService.reserveBook({
+        libraryUuid: chosenLibrary?.libraryUid as string,
+        booUuid: chosenBook?.bookUid as string,
+        tillDate: chosenEndTime,
+      })
 
-  const getLibraries = async () => {
-    // const librariesResponse = await LibraryService.getLibraries(); // library_uid
-    const librariesResponse = await GatewayService.getLibraries({
-      city: city,
-      page: currentPage,
-      size: settings.defaultPageSize,
-    });
-
-    if (librariesResponse?.items
-      && librariesResponse?.page
-      && librariesResponse?.pageSize
-      && librariesResponse?.totalElements
-    ) {
-      setLibraries(librariesResponse);
-      setTotalPages(Math.ceil(librariesResponse.totalElements / librariesResponse.pageSize));
-      setCurrentPage(librariesResponse.page);
-      setErrorMsg("");
+      handleNext();
     } else {
-      setLibraries(undefined);
-      setTotalPages(0);
-      setCurrentPage(1);
-
-      if (!librariesResponse) {
-        setErrorMsg("Ошибка: При запросе данных с сервиса произошла ошибка");
-      } else if (!librariesResponse?.totalElements) {
-        setErrorMsg("Ошибка: Ничего не найдено");
-      } else {
-        console.log(librariesResponse);
-        setErrorMsg("Ошибка: Неожиданная ошибка");
-      }
+      setErrorMsg("Ошибка: Чтобы забронировать книгу, нужно авторизоваться");
     }
   }
 
-  useEffect(() => {
-    getLibraries();
-  }, [currentPage]);
+  const handleNext = () => {
+    setErrorMsg("");
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setErrorMsg("");
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
 
   return (
     <div
-      className="flex flex-col p-10 mt-5 w-5/6 bg-my-third-color drop-shadow-2xl rounded-md"
+      className="p-10 mt-5 w-5/6 bg-my-third-color drop-shadow-2xl rounded-md"
     >
-      <div className="mb-5 flex justify-between flex-col md:flex-row">
-        <Text size="large">Все библиотеки</Text>
-        <div className="flex flex-col md:flex-row gap-5">
-          <InputField label="Город" value={city} setValue={(value: string) => {
-            setCity(value);
-          }}/>
-          <ThemeProvider theme={MyTheme}>
-            <Button
-              sx={{
-                fontSize: "var(--my-little-size)"
-              }}
-              color="secondary"
-              size="small"
-              variant="outlined"
-              onClick={ getLibraries }
-            >
-              Искать
-            </Button>
-          </ThemeProvider>
-        </div>
-      </div>
-
-      {errorMsg &&
-        <Alert
-          sx={{fontWeight: 1000}}
-          severity="error"
-        >
-          {errorMsg}
-        </Alert>
-      }
-
-      <div>
-        {!!totalPages &&
-          <ThemeProvider theme={MyTheme}>
-            <Pagination
-              className="flex justify-center m-3"
-              count={totalPages}
-              page={currentPage}
-              size="medium"
-              onChange={changePage}
-              color="primary" />
-          </ThemeProvider>
-        }
-      </div>
-
-      <div className="flex flex-wrap justify-center">
-        {libraries?.items.map(l => (
-          <Card
-            key={l.libraryUid}
-            className="flex flex-col"
-            sx={{ minWidth: 320, maxWidth: 320, maxHeight: 300, minHeight: 300, margin: 1.5, textWrap: "wrap"}}
-          >
-          <CardContent>
-            <Text size="medium" className="font-extrabold">{l.name}</Text>
-            <br />
-            <div className="flex flex-row gap-2">
-              <Text size="little" className="font-semibold min-w-14">Адрес:</Text>
-              <Text size="little">{l.address}</Text>
+      <Box sx={{ width: '100%' }} className="flex flex-col justify-center items-stretch">
+        <Stepper activeStep={activeStep}>
+          {steps.map((label, _) => {
+            const stepProps: { completed?: boolean } = {};
+            const labelProps: {
+              optional?: React.ReactNode;
+            } = {};
+            return (
+              <Step key={label} {...stepProps}>
+                <ThemeProvider theme={MyTheme}>
+                  <StepLabel {...labelProps}>{label}</StepLabel>
+                </ThemeProvider>
+              </Step>
+            );
+          })}
+        </Stepper>
+        {activeStep === steps.length ? (
+          <React.Fragment>
+            <div className="flex flex-col p-5 gap-5">
+              <Text
+                size="large"
+              >
+                Книга успешно забронирована
+              </Text>
+              <ThemeProvider theme={MyTheme}>
+                <div
+                  className="flex flex-col justify-center gap-5 items-center"
+                >
+                  <Button
+                    color="primary"
+                    size="large"
+                    variant="outlined"
+                    onClick={handleReset}
+                  >
+                    Посмотреть мои бронирования
+                  </Button>
+                  <Button 
+                    color="primary"
+                    size="large"
+                    variant="outlined"
+                    onClick={handleReset}
+                  >
+                    Забронировать еще
+                  </Button>
+                </div>
+              </ThemeProvider>
             </div>
-            <div className="flex flex-row gap-2">
-              <Text size="little" className="font-semibold min-w-14">Город:</Text>
-              <Text size="little">{l.city}</Text>
-            </div>
-          </CardContent>
-          <CardActions disableSpacing sx={{ mt: "auto" }}>
-            <ThemeProvider theme={MyTheme}>
-              <Button size="small">Смотреть книги</Button>
-            </ThemeProvider>
-          </CardActions>
-        </Card>
-        ))}
-      </div>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            {/* <Typography sx={{ mt: 2, mb: 1 }}>Шаг {activeStep + 1}</Typography> */}
+
+            {activeStep === 0 && <LibrariesPage setValue={(value: LibraryInterface) => {
+              handleNext();
+              setChosenLibrary(value);
+            }}/>}
+
+            {activeStep === 1 && <BooksPage
+              libraryName={(chosenLibrary as LibraryInterface).name}
+              libraryUuid={(chosenLibrary as LibraryInterface).libraryUid}
+              setValue={(value: BookInterface) => {
+                handleNext();
+                setChosenBook(value);
+              }
+            }/>}
+
+            {activeStep === 2 &&
+              <ReservePage
+                library={(chosenLibrary as LibraryInterface)}
+                book={(chosenBook as BookInterface)}
+                endDateValue={chosenEndTime}
+                setEndDateValue={(value: Dayjs | null) => {
+                  setChosenEndTime(value);
+                }}
+                setAgreedValue={(value: boolean) => {
+                  setAgreed(value);
+                }}
+              />}
+
+            {errorMsg &&
+              <Alert
+                sx={{fontWeight: 1000}}
+                severity="error"
+              >
+                {errorMsg}
+              </Alert>
+            }
+
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Назад
+              </Button>
+              <Box sx={{ flex: '1 1 auto' }} />
+              {activeStep === 2 &&
+                <ThemeProvider theme={MyTheme}>
+                  <Button
+                    disabled={!agreed || chosenEndTime === null}
+                    color="primary"
+                    size="large"
+                    variant="outlined"
+                    onClick={handleReserve}
+                  >
+                    Забронировать
+                  </Button>
+                </ThemeProvider>
+              }
+            </Box>
+          </React.Fragment>
+        )}
+      </Box>
     </div>
-  )
+    
+  );
 }

@@ -112,7 +112,7 @@ async def update_library_book(
   library_book_service: Annotated[LibraryBookService, Depends(get_library_book_service)],
   id: int,
   library_book_update: LibraryBookUpdate,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.MODERATOR])),
+  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await library_book_service.patch(
     id=id,
