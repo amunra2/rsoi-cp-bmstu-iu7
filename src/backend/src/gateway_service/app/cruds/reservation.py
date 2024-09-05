@@ -10,7 +10,7 @@ from utils.validate import validate_token_exists
 from cruds.base import BaseCRUD
 from utils.settings import settings
 from utils.circuit_breaker import CircuitBreaker
-from schemas.reservation import Reservation, ReservationCreate, ReservationUpdate
+from schemas.reservation import Reservation, ReservationCreate, ReservationPaginationResponse, ReservationUpdate
 from enums.status import ReservationStatus
 
 
@@ -44,11 +44,12 @@ class ReservationCRUD(BaseCRUD):
       service_name="Reservation Service",
     )
 
-    reservation_json: list[Reservation] = response.json()
+    reservation_json = response.json()
+    reservations = reservation_json["items"]
 
-    reservations: list[Reservation] = []
-    for reservation in reservation_json:
-      reservations.append(
+    reservations_items: list[Reservation] = []
+    for reservation in reservations:
+      reservations_items.append(
         Reservation(
           reservationUid=reservation["reservation_uid"],
           username=reservation["username"],
@@ -60,7 +61,12 @@ class ReservationCRUD(BaseCRUD):
         )
       )
     
-    return reservations
+    return ReservationPaginationResponse(
+      page=page,
+      pageSize=size,
+      totalElements=reservation_json["totalElements"],
+      items=reservations_items,
+    )
     
 
   async def get_reservation_by_uid(

@@ -1,8 +1,8 @@
-from click import UUID
+from uuid import UUID
 from sqlalchemy.orm import Session
 
 from cruds.reservation import ReservationCRUD
-from schemas.reservation import ReservationFilter, ReservationUpdate, ReservationCreate
+from schemas.reservation import ReservationFilter, ReservationPaginationResponse, ReservationResponse, ReservationUpdate, ReservationCreate
 from exceptions.http import NotFoundException, ConflictException
 from models.reservation import ReservationModel
 
@@ -17,10 +17,33 @@ class ReservationService():
       page: int = 1,
       size: int = 100,
   ):
-    return await self._reservationCRUD.get_all(
+    reservs: list[ReservationModel]
+    totalItems: int
+    reservs, totalItems = await self._reservationCRUD.get_all(
       filter=filter,
       offset=(page - 1) * size,
       limit=size,
+    )
+    
+    reservItems: list[ReservationResponse] = []
+    for reserv in reservs:
+      reservItems.append(
+        ReservationResponse(
+          reservation_uid=reserv.reservation_uid,
+          username=reserv.username,
+          library_uid=reserv.library_uid,
+          book_uid=reserv.book_uid,
+          status=reserv.status,
+          start_date=reserv.start_date,
+          till_date=reserv.till_date,
+        )
+      )
+
+    return ReservationPaginationResponse(
+      page=page,
+      pageSize=size,
+      totalElements=totalItems,
+      items=reservItems,
     )
   
   async def get_by_uid(

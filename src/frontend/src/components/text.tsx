@@ -7,7 +7,7 @@ interface TextProps {
 
 export default function Text({size, className, children}: PropsWithChildren<TextProps>) {
   return (
-    <div 
+    <div
       className={className}
       style={{fontSize: `var(--my-${size}-size)`, lineHeight: `var(--my-${size}-height)`}}>
       {children}

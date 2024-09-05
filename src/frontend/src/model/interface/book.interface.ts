@@ -1,9 +1,11 @@
+export type BookConditionType = "EXCELLENT" | "GOOD" | "BAD" | "";
+
 export interface BookInterface {
   bookUid: string;
   name: string;
   author: string;
   genre: string;
-  condition: "EXCELLENT" | "GOOD" | "BAD";
+  condition: BookConditionType;
   availableCount: number;
 }
 

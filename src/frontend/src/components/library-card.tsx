@@ -5,14 +5,16 @@ import Text from './text';
 interface LibraryCardProps {
   useName?: boolean;
   library: LibraryInterface;
+  className?: string;
 }
 
 export default function LibraryCard({
   library,
+  className,
   useName = true,
 }: LibraryCardProps) {
   return (
-    <div>
+    <div className={className}>
       {useName && 
         <React.Fragment>
           <Text size="medium" className="font-extrabold">{library.name}</Text>

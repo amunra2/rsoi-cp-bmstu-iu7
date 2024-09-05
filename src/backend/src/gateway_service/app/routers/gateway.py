@@ -5,6 +5,7 @@ from uuid import UUID
 
 from fastapi.security import HTTPAuthorizationCredentials
 
+from enums.status import ReservationStatus
 from schemas.user import UserPayloadDto
 from utils.auth_user import RoleChecker, http_bearer, get_current_user
 from enums.enums import RoleEnum
@@ -17,6 +18,7 @@ from schemas.library import (
   LibraryBookPaginationResponse,
 )
 from schemas.reservation import (
+  BookReservationPaginationResponse,
   BookReservationResponse,
   TakeBookRequest,
   TakeBookResponse,
@@ -114,13 +116,14 @@ async def get_books_in_library(
 @router.get(
   path="/reservations",
   status_code=status.HTTP_200_OK,
-  response_model=list[BookReservationResponse],
+  response_model=BookReservationPaginationResponse,
   responses={
     status.HTTP_200_OK: gateway_api_response.get_user_rented_books(),
   },
 )
 async def get_user_rented_books(
   gateway_service: Annotated[GatewayService, Depends(get_gateway_service)],
+  status: Annotated[ReservationStatus, Query()] | None = None,
   page: Annotated[int, Query(ge=1)] = 1,
   size: Annotated[int, Query(ge=1)] = 100,
   token: HTTPAuthorizationCredentials | None = Depends(http_bearer),
@@ -129,6 +132,7 @@ async def get_user_rented_books(
 ):
   return await gateway_service.get_user_rented_books(
     X_User_Name=user.login,
+    status=status,
     page=page,
     size=size,
     token=token,

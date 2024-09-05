@@ -62,9 +62,14 @@ $apiUser.interceptors.response.use((config: AxiosResponse) => {
       const data = {
         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
       };
-      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
-      localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
-      return $apiUser.request(originalRequest);
+      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data).catch(_ => {
+        localStorage.clear();
+      });
+      
+      if (response) {
+        localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
+        return $apiUser.request(originalRequest);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -72,99 +77,6 @@ $apiUser.interceptors.response.use((config: AxiosResponse) => {
   throw error;
 }));
 // USER
-
-// LIBRARY
-export const $apiLibrary = axios.create({
-  baseURL: LIBRARY_API_URL,
-});
-
-$apiLibrary.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
-  return config;
-});
-
-$apiLibrary.interceptors.response.use((config: AxiosResponse) => {
-  return config;
-}, (async (error) => {
-  const originalRequest = error.config;
-  if (error.response.status === 401 && error.config && !error.config._isRetry) {
-    originalRequest._isRetry = true;
-    try {
-      const data = {
-        "refresh_token": localStorage.getItem(REFRESH_TOKEN),
-      };
-      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
-      localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
-      return $apiLibrary.request(originalRequest);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-  throw error;
-}));
-// LIBRARY
-
-// RATING
-export const $apiRating = axios.create({
-  baseURL: RATING_API_URL,
-});
-
-$apiRating.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
-  return config;
-});
-
-$apiRating.interceptors.response.use((config: AxiosResponse) => {
-  return config;
-}, (async (error) => {
-  const originalRequest = error.config;
-  if (error.response.status === 401 && error.config && !error.config._isRetry) {
-    originalRequest._isRetry = true;
-    try {
-      const data = {
-        "refresh_token": localStorage.getItem(REFRESH_TOKEN),
-      };
-      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
-      localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
-      return $apiRating.request(originalRequest);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-  throw error;
-}));
-// RATING
-
-// RESERVATION
-export const $apiReservation = axios.create({
-  baseURL: RESERVATION_API_URL,
-});
-
-$apiReservation.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
-  return config;
-});
-
-$apiReservation.interceptors.response.use((config: AxiosResponse) => {
-  return config;
-}, (async (error) => {
-  const originalRequest = error.config;
-  if (error.response.status === 401 && error.config && !error.config._isRetry) {
-    originalRequest._isRetry = true;
-    try {
-      const data = {
-        "refresh_token": localStorage.getItem(REFRESH_TOKEN),
-      };
-      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
-      localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
-      return $apiReservation.request(originalRequest);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-  throw error;
-}));
-// RESERVATION
 
 // GATEWAY
 export const $apiGateway = axios.create({
@@ -186,9 +98,14 @@ $apiGateway.interceptors.response.use((config: AxiosResponse) => {
       const data = {
         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
       };
-      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
-      localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
-      return $apiGateway.request(originalRequest);
+      const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data).catch(_ => {
+        localStorage.clear();
+      });
+
+      if (response) {
+        localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
+        return $apiGateway.request(originalRequest);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -196,3 +113,96 @@ $apiGateway.interceptors.response.use((config: AxiosResponse) => {
   throw error;
 }));
 // GATEWAY
+
+// // LIBRARY
+// export const $apiLibrary = axios.create({
+//   baseURL: LIBRARY_API_URL,
+// });
+
+// $apiLibrary.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+//   config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
+//   return config;
+// });
+
+// $apiLibrary.interceptors.response.use((config: AxiosResponse) => {
+//   return config;
+// }, (async (error) => {
+//   const originalRequest = error.config;
+//   if (error.response.status === 401 && error.config && !error.config._isRetry) {
+//     originalRequest._isRetry = true;
+//     try {
+//       const data = {
+//         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
+//       };
+//       const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
+//       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
+//       return $apiLibrary.request(originalRequest);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+//   throw error;
+// }));
+// // LIBRARY
+
+// // RATING
+// export const $apiRating = axios.create({
+//   baseURL: RATING_API_URL,
+// });
+
+// $apiRating.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+//   config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
+//   return config;
+// });
+
+// $apiRating.interceptors.response.use((config: AxiosResponse) => {
+//   return config;
+// }, (async (error) => {
+//   const originalRequest = error.config;
+//   if (error.response.status === 401 && error.config && !error.config._isRetry) {
+//     originalRequest._isRetry = true;
+//     try {
+//       const data = {
+//         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
+//       };
+//       const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
+//       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
+//       return $apiRating.request(originalRequest);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+//   throw error;
+// }));
+// // RATING
+
+// // RESERVATION
+// export const $apiReservation = axios.create({
+//   baseURL: RESERVATION_API_URL,
+// });
+
+// $apiReservation.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+//   config.headers.Authorization = `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`;
+//   return config;
+// });
+
+// $apiReservation.interceptors.response.use((config: AxiosResponse) => {
+//   return config;
+// }, (async (error) => {
+//   const originalRequest = error.config;
+//   if (error.response.status === 401 && error.config && !error.config._isRetry) {
+//     originalRequest._isRetry = true;
+//     try {
+//       const data = {
+//         "refresh_token": localStorage.getItem(REFRESH_TOKEN),
+//       };
+//       const response = await $apiAuth.post<AuthResponse>(`/user/refresh/`, data);
+//       localStorage.setItem(ACCESS_TOKEN, response.data.access_token as string);
+//       return $apiReservation.request(originalRequest);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+//   throw error;
+// }));
+// // RESERVATION

@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Text from '../components/text';
 import Pagination from '@mui/material/Pagination';
 import { LibraryInterface, LibraryResponseInterface } from '../model/interface/library.interface';
-import LibraryService from '../services/library-service';
 import GatewayService from '../services/gateway-service';
 import InputField from '../components/input-field';
 import { ThemeProvider } from '@mui/material';

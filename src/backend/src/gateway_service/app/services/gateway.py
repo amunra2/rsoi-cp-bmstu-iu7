@@ -19,8 +19,10 @@ from schemas.library import (
   BookUpdate,
 )
 from schemas.reservation import (
+  BookReservationPaginationResponse,
   Reservation,
   BookReservationResponse,
+  ReservationPaginationResponse,
   TakeBookRequest,
   ReservationCreate,
   TakeBookResponse,
@@ -122,19 +124,21 @@ class GatewayService():
   async def get_user_rented_books(
     self,
     X_User_Name: str,
+    status: ReservationStatus | None = None,
     page: int = 1,
     size: int = 100,
     token: HTTPAuthorizationCredentials | None = None,
   ):
-    reservations: list[Reservation] = await self._reservationCRUD.get_all_reservations(
+    reservations: ReservationPaginationResponse = await self._reservationCRUD.get_all_reservations(
       page=page,
       size=size,
       username=X_User_Name,
+      status=status,
       token=token,
     )
 
     book_reservations: list[BookReservationResponse] = []
-    for reservation in reservations:
+    for reservation in reservations.items:
       try:
         library: LibraryResponse = await self._libraryCRUD.get_library_by_uid(reservation.libraryUid, token=token)
         book: BookInfo = await self._libraryCRUD.get_book_by_uid(reservation.bookUid, token=token)
@@ -173,8 +177,14 @@ class GatewayService():
             ),
           )
         )
+    
+    return BookReservationPaginationResponse(
+      page=page,
+      pageSize=size,
+      totalElements=reservations.totalElements,
+      items=book_reservations,
+    )
 
-    return book_reservations
   
 
   async def get_user_rating(
@@ -208,7 +218,7 @@ class GatewayService():
       token=token,
     )
 
-    if (len(user_rented_books) >= user_rating.stars):
+    if (len(user_rented_books.items) >= user_rating.stars):
       raise BadRequestException(prefix="take_book")
     
     library_book = await self.__get_book_in_library(
@@ -299,7 +309,7 @@ class GatewayService():
       library_book = await self.__get_book_in_library( # find library_book info
         libraryUid=reservation.libraryUid,
         bookUid=reservation.bookUid,
-        token=token,
+        # token=token,
       )
 
       await self._libraryCRUD.patch_library_book( # inc available count

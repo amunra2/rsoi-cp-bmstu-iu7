@@ -61,6 +61,10 @@ export default function NavBar() {
     navigate("/about");
   }
 
+  const goToReservationPage = () => {
+    navigate("/reservations");
+  }
+
   return (
     <ThemeProvider theme={MyTheme}>
       <AppBar position="static" color="primary">
@@ -159,6 +163,9 @@ export default function NavBar() {
                 >
                   <MenuItem onClick={goToProfilePage}>
                     <Text size="little">Профиль</Text>
+                  </MenuItem>
+                  <MenuItem onClick={goToReservationPage}>
+                    <Text size="little">Бронирования</Text>
                   </MenuItem>
                   <MenuItem onClick={goToAboutPage}>
                     <Text size="little">О сайте</Text>

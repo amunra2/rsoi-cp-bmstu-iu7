@@ -8,7 +8,7 @@ from utils.auth_user import RoleChecker
 from cruds.reservation import ReservationCRUD
 from enums.enums import DomainEnum, RoleEnum
 from schemas.api_response import ApiResponses
-from schemas.reservation import Reservation, ReservationFilter, ReservationCreate, ReservationUpdate
+from schemas.reservation import Reservation, ReservationFilter, ReservationCreate, ReservationPaginationResponse, ReservationUpdate
 from utils.database import get_db
 from services.reservation import ReservationService
 from enums.status import ReservationStatus
@@ -40,7 +40,7 @@ router = APIRouter(
 @router.get(
   path="/",
   status_code=status.HTTP_200_OK,
-  response_model=list[Reservation],
+  response_model=ReservationPaginationResponse,
   responses={
     status.HTTP_200_OK: ApiResponses.get_all(DomainEnum.RESERVATION),
   }

@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 from pydantic import BaseModel, constr, conint, field_validator
 from datetime import datetime
 from uuid import UUID
@@ -28,6 +28,12 @@ class ReservationBase(BaseModel):
 
 class Reservation(ReservationBase):
   reservationUid: UUID
+  
+class ReservationPaginationResponse(BaseModel):
+  page: int
+  pageSize: int
+  totalElements: int
+  items: List[Reservation]
 
 
 class ReservationCreate(BaseModel):
@@ -70,6 +76,12 @@ class BookReservationResponse(BaseModel):
     json_encoders = {
       datetime: convert_datetime_to_iso_8601
     }
+    
+class BookReservationPaginationResponse(BaseModel):
+  page: int
+  pageSize: int
+  totalElements: int
+  items: List[BookReservationResponse]
 
 
 class TakeBookRequest(BaseModel):

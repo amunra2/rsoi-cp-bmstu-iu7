@@ -16,6 +16,7 @@ import AuthService from "../services/auth-service";
 import Alert from '@mui/material/Alert';
 import { Dayjs } from "dayjs";
 import GatewayService from "../services/gateway-service";
+import { useNavigate } from 'react-router-dom';
 
 const steps = ['Выберите библиотеку', 'Выберите книгу', 'Забронируйте книгу'];
 
@@ -27,6 +28,8 @@ export default function MainPage() {
   const [chosenEndTime, setChosenEndTime] = React.useState<Dayjs | null>(null);
   const [agreed, setAgreed] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<string>("");
+  const navigate = useNavigate();
+
 
   const handleReserve = async () => {
     if (AuthService.isAuth() && agreed && chosenEndTime) {
@@ -34,12 +37,12 @@ export default function MainPage() {
         libraryUuid: chosenLibrary?.libraryUid as string,
         booUuid: chosenBook?.bookUid as string,
         tillDate: chosenEndTime,
-      })
+      });
 
       if (typeof response === "string") {
         setErrorMsg(response);
       } else {
-        // handleNext();
+        handleNext();
       }
     } else {
       setErrorMsg("Ошибка: Чтобы забронировать книгу, нужно авторизоваться");
@@ -58,6 +61,10 @@ export default function MainPage() {
 
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const goToReservationsPage = () => {
+    navigate(`/reservations`)
   };
 
   return (
@@ -96,7 +103,7 @@ export default function MainPage() {
                     color="primary"
                     size="large"
                     variant="outlined"
-                    onClick={handleReset}
+                    onClick={goToReservationsPage}
                   >
                     Посмотреть мои бронирования
                   </Button>
