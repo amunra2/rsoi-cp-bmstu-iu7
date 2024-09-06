@@ -8,6 +8,6 @@ COPY ./backend/src/requirements.txt /gateway
 
 RUN pip3.10 install -r requirements.txt
 
-EXPOSE 8880
+EXPOSE 8080
 
 CMD ["python3", "app/main.py"]
