@@ -15,21 +15,6 @@ export const USER_API_URL = `
   `${settings.userService.host}:`+
   `${settings.userService.port}/`+
   `api/v1/`; // для логики своей захотел их разделить, хоть они и одинаковые
-export const LIBRARY_API_URL = `
-  http://`+
-  `${settings.libraryService.host}:`+
-  `${settings.libraryService.port}/`+
-  `api/v1/`;
-export const RATING_API_URL = `
-  http://`+
-  `${settings.ratingService.host}:`+
-  `${settings.ratingService.port}/`+
-  `api/v1/`;
-export const RESERVATION_API_URL = `
-  http://`+
-  `${settings.reservationService.host}:`+
-  `${settings.reservationService.port}/`+
-  `api/v1/`;
 export const GATEWAY_API_URL = `
   http://`+
   `${settings.gatewayService.host}:`+
@@ -113,6 +98,23 @@ $apiGateway.interceptors.response.use((config: AxiosResponse) => {
   throw error;
 }));
 // GATEWAY
+
+
+// export const LIBRARY_API_URL = `
+//   http://`+
+//   `${settings.libraryService.host}:`+
+//   `${settings.libraryService.port}/`+
+//   `api/v1/`;
+// export const RATING_API_URL = `
+//   http://`+
+//   `${settings.ratingService.host}:`+
+//   `${settings.ratingService.port}/`+
+//   `api/v1/`;
+// export const RESERVATION_API_URL = `
+//   http://`+
+//   `${settings.reservationService.host}:`+
+//   `${settings.reservationService.port}/`+
+//   `api/v1/`;
 
 // // LIBRARY
 // export const $apiLibrary = axios.create({
