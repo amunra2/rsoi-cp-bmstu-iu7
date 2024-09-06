@@ -6,6 +6,8 @@ import MainPage from "../pages/main";
 import ProfilePage from "../pages/profile";
 import AboutPage from "../pages/about";
 import ReservationsPage from "../pages/reservations";
+import StatisticsPage from "../pages/statistics";
+import NotFoundPage from "../pages/not-found";
 
 
 export const router = createBrowserRouter([
@@ -25,6 +27,8 @@ export const router = createBrowserRouter([
       {path: "about", element: <AboutPage />},
       {path: "profile", element: <ProfilePage />},
       {path: "reservations", element: <ReservationsPage />},
-    ]
+      {path: "statistics", element: <StatisticsPage />},
+      {path: "*", element: <NotFoundPage/>},
+    ],
   },
 ]);
