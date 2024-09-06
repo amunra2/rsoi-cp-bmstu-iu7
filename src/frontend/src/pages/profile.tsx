@@ -22,6 +22,7 @@ import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+import { useNavigate } from 'react-router-dom';
 
 const StyledRating = styled(Rating)(({ theme }) => ({
   '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
@@ -85,7 +86,7 @@ export default function ProfilePage() {
   const [ratingState, setRatingState] = useState<number>(0);  
   const [errorUserMsg, setErrorUserMsg] = useState<string>();
   const [errorRatingMsg, setErrorRatingMsg] = useState<string>();
-  
+  const navigate = useNavigate();
 
   const getMe = async () => {
     const user = await UserService.getMe();
@@ -116,6 +117,10 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
+    if (!AuthService.isAuth()) {
+      navigate("/");
+    }
+
     getMe();
     getRating();
   }, []);
@@ -144,7 +149,7 @@ export default function ProfilePage() {
             {user?.login ?? "???"}
           </Text>
 
-          <div className="flex flex-wrap gap-16">
+          <div className="flex flex-wrap justify-center gap-16">
             <Card
               key="profile"
               raised={true}
@@ -159,6 +164,7 @@ export default function ProfilePage() {
                 {errorUserMsg &&
                   <Alert
                     sx={{fontWeight: 1000}}
+                    className="mt-5 max-w-80"
                     severity="error"
                   >
                     {errorUserMsg}
@@ -192,6 +198,7 @@ export default function ProfilePage() {
                 {errorRatingMsg &&
                   <Alert
                     sx={{fontWeight: 1000}}
+                    className="mt-5 max-w-80"
                     severity="error"
                   >
                     {errorRatingMsg}

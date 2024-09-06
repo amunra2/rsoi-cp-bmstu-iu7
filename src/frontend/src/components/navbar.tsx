@@ -65,6 +65,10 @@ export default function NavBar() {
     navigate("/reservations");
   }
 
+  const goToStatisticsPage = () => {
+    navigate("/statistics");
+  }
+
   return (
     <ThemeProvider theme={MyTheme}>
       <AppBar position="static" color="primary">
@@ -73,7 +77,7 @@ export default function NavBar() {
             <WebsiteLogo size="medium" />
 
             {/* MENU XS SIZE */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -102,28 +106,28 @@ export default function NavBar() {
               >
                 {pages.map((page) => (
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    {/* <Typography sx={{ textAlign: 'center' }}>{page}</Typography> */}
-                    {/* {page} */}
+                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                    {page}
                   </MenuItem>
                 ))}
               </Menu>
-            </Box>
+            </Box> */}
 
             {/* MENU MD SIZE */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
                 <Button
                   key={page}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
                 >
-                  {/* {page} */}
+                  {page}
                 </Button>
               ))}
-            </Box>
+            </Box> */}
 
             {/* USER MENU ALL SIZES */}
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ marginLeft: "auto", marginRight: 0 }}>
               {AuthService.isAuth() ?
                 <Tooltip title="Обо мне">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -167,6 +171,11 @@ export default function NavBar() {
                   <MenuItem onClick={goToReservationPage}>
                     <Text size="little">Бронирования</Text>
                   </MenuItem>
+                  {AuthService.isAdmin() && 
+                    <MenuItem onClick={goToStatisticsPage}>
+                      <Text size="little">Статистика</Text>
+                    </MenuItem>
+                  }
                   <MenuItem onClick={goToAboutPage}>
                     <Text size="little">О сайте</Text>
                   </MenuItem>

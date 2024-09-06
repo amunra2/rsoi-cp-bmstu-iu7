@@ -41,6 +41,7 @@ import { BookConditionType } from '../model/interface/book.interface';
 import { useNavigate } from 'react-router-dom';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import AuthService from '../services/auth-service';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -109,6 +110,7 @@ export default function ReservationsPage() {
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [errorModalMsg, setErrorModalMsg] = useState<string>("");
   const [reload, setReload] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const [expandAccordions, setExpandAccordions] = useState<number[]>([]);
 
@@ -129,6 +131,9 @@ export default function ReservationsPage() {
 
   const collapseAll = () => {
     setExpandAccordions([]);
+    const newReload = !reload;
+    setReload(newReload);
+    // console.log(newReload);
   }
 
   const handleOpen = (reservationUuid: string) => {
@@ -168,8 +173,6 @@ export default function ReservationsPage() {
         console.log(reservationResponse);
         setErrorMsg("Ошибка: Неожиданная ошибка");
       }
-
-      
     }
   }
 
@@ -228,7 +231,6 @@ export default function ReservationsPage() {
       } else {
         handleClose();
         collapseAll();
-        setReload(!reload);
       }
     } else {
       setErrorModalMsg("Ошибка: не все данные заполнены");
@@ -236,6 +238,10 @@ export default function ReservationsPage() {
   }
 
   useEffect(() => {
+    if (!AuthService.isAuth()) {
+      navigate("/");
+    }
+    
     getReservations();
   }, [currentPage, reservationStatus, reload]);
 
