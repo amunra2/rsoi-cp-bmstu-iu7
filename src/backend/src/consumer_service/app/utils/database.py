@@ -26,7 +26,7 @@ def create_tables():
 
 Engine = create_engine(
   url = construct_db_url(),
-  pool_size=50,
+  pool_size=10,
   max_overflow=20,
 )
 SessionLocal = sessionmaker(
