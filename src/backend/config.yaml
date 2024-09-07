@@ -23,6 +23,12 @@ databases:
     db: reservations
     host: pg_db
     port: 5432
+  statistics_db:
+    user: postgres
+    password: password
+    db: statistics
+    host: localhost # pg_db
+    port: 5434 # 5432
 
 services:
   auth:
@@ -45,6 +51,11 @@ services:
   reservation:
     host: "0.0.0.0"
     port: 8070
+    log_level: "info"
+    reload: True
+  statistics:
+    host: "0.0.0.0"
+    port: 8090
     log_level: "info"
     reload: True
   gateway:
