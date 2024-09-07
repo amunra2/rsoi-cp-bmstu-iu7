@@ -25,7 +25,7 @@ def consume_messages():
 
   try:
     while True:
-      msg = consumer.poll(1.0)
+      msg = consumer.poll(timeout=30)
       logging.info("Polling")
       logging.info(msg)
 

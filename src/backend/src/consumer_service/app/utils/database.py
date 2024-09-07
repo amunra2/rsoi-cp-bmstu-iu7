@@ -25,7 +25,9 @@ def create_tables():
   Base.metadata.create_all(bind=Engine)
 
 Engine = create_engine(
-  url = construct_db_url()
+  url = construct_db_url(),
+  pool_size=50,
+  max_overflow=20,
 )
 SessionLocal = sessionmaker(
   autocommit=False,
