@@ -5,7 +5,7 @@ from jwcrypto.jwt import JWTExpired
 
 from enums.enums import PayloadEnum, BadRequestErrorTextEnum, LoginErrorTextEnum, TokenTypeEnum
 from utils.jwt import decode_jwt
-from exceptions.http import BadRequestException, NotAuthorizedException
+from exceptions.http import BadRequestAuthException, NotAuthorizedException
 
 def validate_token_exists(
   token: HTTPAuthorizationCredentials | None,
@@ -35,12 +35,12 @@ def validate_token_type(
 ) -> None:
   try:
     if payload[PayloadEnum.TOKEN_TYPE] != token_type:
-      raise BadRequestException(
+      raise BadRequestAuthException(
         error_in=BadRequestErrorTextEnum.INVALID_TOKEN_TYPE,
         detail=TokenTypeEnum.REFRESH if token_type == TokenTypeEnum.ACCESS else TokenTypeEnum.ACCESS,
       )
   except KeyError as err:
-    raise BadRequestException(
+    raise BadRequestAuthException(
         error_in=BadRequestErrorTextEnum.INVALID_PAYLOAD_FIELD,
         detail=err,
       )

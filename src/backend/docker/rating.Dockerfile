@@ -2,9 +2,9 @@ FROM python:3.10-alpine
 
 WORKDIR /rating
 
-COPY ./src/rating_service /rating
-COPY ../config.yaml /rating
-COPY ./src/requirements.txt /rating
+COPY ./backend/src/rating_service /rating
+COPY ./backend/config.yaml /rating
+COPY ./backend/src/requirements.txt /rating
 
 RUN pip3.10 install -r requirements.txt
 

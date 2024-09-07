@@ -2,9 +2,9 @@ FROM python:3.10-alpine
 
 WORKDIR /reservation
 
-COPY ./src/reservation_service /reservation
-COPY ../config.yaml /reservation
-COPY ./src/requirements.txt /reservation
+COPY ./backend/src/reservation_service /reservation
+COPY ./backend/config.yaml /reservation
+COPY ./backend/src/requirements.txt /reservation
 
 RUN pip3.10 install -r requirements.txt
 

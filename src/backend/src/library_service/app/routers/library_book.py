@@ -49,7 +49,7 @@ async def get_all_library_book(
   filter: LibraryBookFilter = Depends(),
   page: Annotated[int, Query(ge=1)] = 1,
   size: Annotated[int, Query(ge=1)] = 100,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await library_book_service.get_all(
       filter=filter,
@@ -70,7 +70,7 @@ async def get_all_library_book(
 async def get_library_book_by_id(
   library_book_service: Annotated[LibraryBookService, Depends(get_library_book_service)],
   id: int,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await library_book_service.get_by_id(
     id=id,
@@ -112,7 +112,7 @@ async def update_library_book(
   library_book_service: Annotated[LibraryBookService, Depends(get_library_book_service)],
   id: int,
   library_book_update: LibraryBookUpdate,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.MODERATOR])),
+  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await library_book_service.patch(
     id=id,

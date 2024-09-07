@@ -50,7 +50,7 @@ async def get_all_book(
   filter: BookFilter = Depends(),
   page: Annotated[int, Query(ge=1)] = 1,
   size: Annotated[int, Query(ge=1)] = 100,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await book_service.get_all(
       filter=filter,
@@ -71,7 +71,7 @@ async def get_all_book(
 async def get_book_by_uid(
   book_service: Annotated[BookService, Depends(get_book_service)],
   uid: UUID,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await book_service.get_by_uid(
     uid=uid,
@@ -113,7 +113,7 @@ async def update_book(
   book_service: Annotated[BookService, Depends(get_book_service)],
   uid: UUID,
   book_update: BookUpdate,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.MODERATOR])),
+  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await book_service.patch(
     uid=uid,

@@ -48,7 +48,7 @@ async def get_all_library(
   filter: LibraryFilter = Depends(),
   page: Annotated[int, Query(ge=1)] = 1,
   size: Annotated[int, Query(ge=1)] = 100,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await library_service.get_all(
     filter=filter,
@@ -69,7 +69,7 @@ async def get_all_library(
 async def get_library_by_uid(
   library_service: Annotated[LibraryService, Depends(get_library_service)],
   uid: UUID,
-  _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
+  # _: bool = Depends(RoleChecker(allowed_roles=[RoleEnum.USER, RoleEnum.MODERATOR])),
 ):
   return await library_service.get_by_uid(
     uid=uid,

@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
 
 from utils.database import create_tables
 from exceptions.handlers import http_exception_handler, request_validation_exception_handler
@@ -41,8 +42,18 @@ app = FastAPI(
   title="Auth Service",
   version="v1",
 )
+
+app.add_middleware(
+  CORSMiddleware,
+  allow_credentials=True,
+  allow_origins=['*'],
+  allow_methods=['*'],
+  allow_headers=['*'],
+)
+
 app.include_router(api_contoller, prefix="/api/v1")
 app.openapi = custom_openapi
+
 
 @app.exception_handler(HTTPException)
 async def custom_http_exception_handler(request, exc):

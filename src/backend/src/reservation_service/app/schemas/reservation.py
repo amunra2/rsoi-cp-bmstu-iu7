@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import Query
 from pydantic import BaseModel, constr, conint, validator
 from datetime import datetime
@@ -70,3 +70,13 @@ class Reservation(ReservationBase):
   id: int
   reservation_uid: UUID
   
+  
+class ReservationResponse(ReservationBase):
+  reservation_uid: UUID
+
+
+class ReservationPaginationResponse(BaseModel):
+  page: Annotated[int, conint(ge=1)]
+  pageSize: Annotated[int, conint(ge=1)]
+  totalElements: Annotated[int, conint(ge=0)]
+  items: List[ReservationResponse]

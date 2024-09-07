@@ -49,4 +49,4 @@ class RoleChecker:
       or user.role in self.allowed_roles:
       return True
     
-    raise ForbiddenException()
+    raise ForbiddenException

@@ -31,17 +31,17 @@ class LibraryCRUD(BaseCRUD):
     page: int = 1,
     size: int = 100,
     city: str | None = None,
-    token: HTTPAuthorizationCredentials | None = None,
+    # token: HTTPAuthorizationCredentials | None = None,
   ):
-    validate_token_exists(token)
+    # validate_token_exists(token)
     
     response: Response = CircuitBreaker.send_request(
       url=f'{self.http_path}library/?page={page}&size={size}'\
         f'{f"&city={city}" if city else ""}',
       http_method=requests.get,
-      headers={
-        AUTHORIZATION: token.scheme+SPACE+token.credentials,
-      },
+      # headers={
+      #   AUTHORIZATION: token.scheme+SPACE+token.credentials,
+      # },
     )
     self._check_status_code(
       status_code=response.status_code,
@@ -74,16 +74,16 @@ class LibraryCRUD(BaseCRUD):
     self,
     page: int = 1,
     size: int = 100,
-    token: HTTPAuthorizationCredentials | None = None,
-  ) -> list[LibraryBookEntityResponse]:
-    validate_token_exists(token)
+    # token: HTTPAuthorizationCredentials | None = None,
+  ) -> list[list[LibraryBookEntityResponse], int]:
+    # validate_token_exists(token)
     
     response: Response = CircuitBreaker.send_request(
       url=f'{self.http_path}library_book/?page={page}&size={size}',
       http_method=requests.get,
-      headers={
-        AUTHORIZATION: token.scheme+SPACE+token.credentials,
-      },
+      # headers={
+      #   AUTHORIZATION: token.scheme+SPACE+token.credentials,
+      # },
     )
     self._check_status_code(
       status_code=response.status_code,
@@ -117,7 +117,7 @@ class LibraryCRUD(BaseCRUD):
         )
       )
 
-    return library_book_items
+    return library_book_items, library_books_json["totalElements"]
   
 
   async def get_library_by_uid(

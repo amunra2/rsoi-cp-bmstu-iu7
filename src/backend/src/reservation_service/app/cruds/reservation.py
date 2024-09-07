@@ -14,10 +14,13 @@ class ReservationCRUD():
       filter: ReservationFilter,
       offset: int = 0,
       limit: int = 100,
-  ) -> list[ReservationModel]:
+  ) -> list[list[ReservationModel], int]:
     reservations = self._db.query(ReservationModel)
     reservations = await self.__filter_reservations(reservations, filter)
-    return reservations.offset(offset).limit(limit).all()
+    total = reservations.count()
+    reservations = reservations.order_by(ReservationModel.status.desc(), ReservationModel.id)
+    
+    return reservations.offset(offset).limit(limit).all(), total
   
   async def get_by_uid(self, uid: UUID) -> ReservationModel | None:
     return self._db.query(ReservationModel).filter(ReservationModel.reservation_uid == uid).first()

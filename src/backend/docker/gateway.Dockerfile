@@ -2,9 +2,9 @@ FROM python:3.10-alpine
 
 WORKDIR /gateway
 
-COPY ./src/gateway_service /gateway
-COPY ../config.yaml /gateway
-COPY ./src/requirements.txt /gateway
+COPY ./backend/src/gateway_service /gateway
+COPY ./backend/config.yaml /gateway
+COPY ./backend/src/requirements.txt /gateway
 
 RUN pip3.10 install -r requirements.txt
 

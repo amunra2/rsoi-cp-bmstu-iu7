@@ -97,7 +97,7 @@ class NotAuthorizedException(HTTPException):
       headers=headers,
     )
     
-class BadRequestException(HTTPException):
+class BadRequestAuthException(HTTPException):
   def __init__(
     self,
     error_in: BadRequestErrorTextEnum,
