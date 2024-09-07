@@ -62,7 +62,7 @@ services:
       context: "."
       dockerfile: ./frontend/docker/Dockerfile
     ports:
-      - "3333:80"
+      - "80:80"
     networks:
       - default
 

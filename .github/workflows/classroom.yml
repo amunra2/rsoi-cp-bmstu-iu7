@@ -30,21 +30,28 @@ jobs:
           source: "src"
           target: /home/${{ secrets.SSH_USERNAME }}/librareally
 
-      # - name: Run app on VM
-      #   uses: appleboy/ssh-action@v1.0.0
-      #   env:
-      #     WAIT_PORTS: 8080,8070,8060,8050
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USERNAME }}
-      #     key: ${{ secrets.SSH_KEY }}
-      #     port: ${{ secrets.SSH_PORT }}
-      #     script: |
-      #       cd /home/${{ secrets.SSH_USERNAME }}/library_system_lab03
-      #       echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose down
-      #       echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi gateway_service_lab03
-      #       echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi library_service_lab03
-      #       echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi reservation_service_lab03
-      #       echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi rating_service_lab03
-      #       echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose up -d
-      #       echo ${{ secrets.SSH_PASSWORD }} | sudo ./scripts/wait-script.sh
+      - name: Run app on VM
+        uses: appleboy/ssh-action@v1.0.0
+        env:
+          WAIT_PORTS: 8080,8070,8060,8050,8090,8888
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/${{ secrets.SSH_USERNAME }}/librareally
+            sudo -S docker compose down
+            sudo docker rmi gateway_service
+            sudo docker rmi library_service
+            sudo docker rmi reservation_service
+            sudo docker rmi rating_service
+            sudo docker rmi auth_service
+            sudo docker rmi statistics_service
+            sudo docker rmi frontend
+            sudo docker rmi consumer_service
+            sudo docker compose up -d
+
+# echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose up -d
+
