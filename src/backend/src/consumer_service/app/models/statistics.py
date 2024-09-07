@@ -9,5 +9,4 @@ class StatisticsModel(Base):
   method      = Column(String)
   url         = Column(String)
   status_code = Column(String)
-  description = Column(String)
   time        = Column(DateTime(timezone=True), nullable=False)

@@ -29,7 +29,6 @@ class StatisticsService():
           method=statistic.method,
           url=statistic.url,
           status_code=statistic.status_code,
-          description=statistic.description,
           time=statistic.time,
         )
       )

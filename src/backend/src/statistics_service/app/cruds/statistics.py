@@ -14,6 +14,6 @@ class StatisticsCRUD():
   ) -> list[list[StatisticsModel], int]:
     statistics = self._db.query(StatisticsModel)
     total = statistics.count()
-    statistics = statistics.order_by(StatisticsModel.id)
+    statistics = statistics.order_by(StatisticsModel.id.desc())
     
     return statistics.offset(offset).limit(limit).all(), total

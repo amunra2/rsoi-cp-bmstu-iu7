@@ -15,6 +15,7 @@ LIBRARY="library"
 RATING="rating"
 RESERVATION="reservation"
 AUTH="auth"
+STATISTICS="statistics"
 
 # Prefix/Suffix
 DB_SUFFIX="_db"

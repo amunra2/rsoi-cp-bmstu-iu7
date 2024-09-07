@@ -1,9 +1,9 @@
+from typing import Annotated
 from confluent_kafka import Consumer, KafkaError
-import time 
-from utils.database import get_db
+import time
+
+from utils.database import get_session
 from models.statistics import StatisticsModel
-from sqlalchemy.orm import session
-from fastapi import Depends
 import json
 
 import logging
@@ -46,9 +46,8 @@ def consume_messages():
 
         statistics = StatisticsModel(**data_dict)
 
-        db = get_db()
-
-        db.add(statistics) 
+        db = get_session()
+        db.add(statistics)
         db.commit()
         db.refresh(statistics)
 

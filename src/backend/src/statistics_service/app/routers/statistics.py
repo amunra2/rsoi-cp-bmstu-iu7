@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Body, Depends, Query, status
 from typing import Annotated
 from confluent_kafka import Producer
 from sqlalchemy.orm import Session
-from schemas.statistics import StatisticsPaginationResponse
+from schemas.statistics import StatisticsPaginationResponse, StatisticsCreate
 from utils.database import get_db
 import json
 
@@ -42,17 +42,18 @@ producer = Producer(producer_conf)
 
 @router.post(
   path="/produce",
-  status_code=status.HTTP_201_CREATED
+  status_code=status.HTTP_201_CREATED,
+  response_model={},
 )
 async def produce(
-  data: dict
+  statistics_produce: Annotated[StatisticsCreate, Body()],
 ):
-  producer.produce('my-topic', value=json.dumps(data).encode('utf-8'))
+  producer.produce('my-topic', value=statistics_produce.model_dump_json().encode('utf-8'))
   producer.flush()
   return {"status": "success"}
 
 @router.get(
-  "/",
+  path="/",
   status_code=status.HTTP_200_OK,
   response_model=StatisticsPaginationResponse,
   responses={

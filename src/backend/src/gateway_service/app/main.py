@@ -11,6 +11,12 @@ from exceptions.handlers import (
   request_validation_exception_handler,
 )
 
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse, Response
+import requests
+import datetime
+import pytz
+
 
 def custom_openapi():
   if not app.openapi_schema:
@@ -50,6 +56,26 @@ app.add_middleware(
   allow_methods=['*'],
   allow_headers=['*'],
 )
+
+@app.middleware("http")
+async def logs_handler(request: Request, call_next) -> Response: 
+    response: Response = await call_next(request)
+
+    method = request.method
+    url = request.url
+    status_code = response.status_code
+    current_time = datetime.datetime.now()
+    moscow_timezone = pytz.timezone('Europe/Moscow')
+    moscow_time = current_time.astimezone(moscow_timezone)
+    # formatted_moscow_time = moscow_time.strftime("%d/%m/%Y (%H:%M)")
+
+    data=f'{{"method": "{method}", "url": "{url}", "status_code": "{status_code}", "time": "{moscow_time}"}}'
+    try:
+      requests.post(url=f'http://{settings.options.statistics.host}:{settings.options.statistics.port}/api/v1/statistics/produce', data=data)
+    except Exception as err:
+      print(err)
+
+    return response
 
 app.include_router(api_router, prefix="/api/v1")
 app.openapi = custom_openapi
