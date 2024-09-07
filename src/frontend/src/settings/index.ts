@@ -2,17 +2,17 @@ import { ServiceSettings } from "./types"
 
 class Settings {
   public userService: ServiceSettings = {
-    host: "localhost",
+    host: "51.250.38.163",
     port: 8888,
   }
 
   public gatewayService: ServiceSettings = {
-    host: "localhost",
+    host: "51.250.38.163",
     port: 8080,
   }
 
   public statisticsService: ServiceSettings = {
-    host: "localhost",
+    host: "51.250.38.163",
     port: 8090,
   }
 
