@@ -11,7 +11,13 @@ class Settings {
     port: 8080,
   }
 
+  public statisticsService: ServiceSettings = {
+    host: "localhost",
+    port: 8090,
+  }
+
   public defaultPageSize: number = 5;
+  public defaultStatisticsPageSize: number = 50;
 }
 
 const settings = new Settings();

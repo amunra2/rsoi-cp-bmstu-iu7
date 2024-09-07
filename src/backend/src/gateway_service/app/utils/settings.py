@@ -27,12 +27,17 @@ class JWKSSettings(BaseModel):
   port: int = None
   kid: str = None
   
+class StatisticsSettings(BaseModel):
+  host: str = None
+  port: int = None
+
 class SettingOptions(BaseModel):
   gateway_service: GatewayServiceSettings = GatewayServiceSettings()
   library_service: ServiceSettings = ServiceSettings()
   rating_service: ServiceSettings = ServiceSettings()
   reservation_service: ServiceSettings = ServiceSettings()
   jwks: JWKSSettings = JWKSSettings()
+  statistics: StatisticsSettings = StatisticsSettings()
 
 class Settings():
   options: SettingOptions = SettingOptions()
@@ -75,6 +80,10 @@ class Settings():
       Settings.options.jwks.host = authServiceData[NETWORK_HOST]
       Settings.options.jwks.port = authServiceData[PORT]
       Settings.options.jwks.kid = authServiceData[JWKS_KID]
+      
+      statisticsServiceData = data[SERVICE+S_SUFFIX][STATISTICS]
+      Settings.options.statistics.host = statisticsServiceData[NETWORK_HOST]
+      Settings.options.statistics.port = statisticsServiceData[PORT]
     except KeyError as e:
       print(f"SETTINGS: no argument {e}")
     else:

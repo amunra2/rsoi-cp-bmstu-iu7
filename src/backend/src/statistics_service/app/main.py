@@ -5,17 +5,12 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers.api import router as api_router
+from utils.database import create_tables
 from utils.settings import settings
 from exceptions.handlers import (
   http_exception_handler,
   request_validation_exception_handler,
 )
-
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse, Response
-import requests
-import datetime
-import pytz
 
 
 def custom_openapi():
@@ -43,11 +38,13 @@ def custom_openapi():
 
   return app.openapi_schema
 
+create_tables()
 
 app = FastAPI(
-  title="Library System",
+  title="Statistics Service",
   version="v1",
 )
+
 
 app.add_middleware(
   CORSMiddleware,
@@ -57,27 +54,7 @@ app.add_middleware(
   allow_headers=['*'],
 )
 
-@app.middleware("http")
-async def logs_handler(request: Request, call_next) -> Response: 
-    response: Response = await call_next(request)
-
-    method = request.method
-    url = request.url
-    status_code = response.status_code
-    current_time = datetime.datetime.now()
-    moscow_timezone = pytz.timezone('Europe/Moscow')
-    moscow_time = current_time.astimezone(moscow_timezone)
-    # formatted_moscow_time = moscow_time.strftime("%d/%m/%Y (%H:%M)")
-
-    data=f'{{"method": "{method}", "url": "{url}", "status_code": "{status_code}", "time": "{moscow_time}"}}'
-    try:
-      requests.post(url=f'http://{settings.options.statistics.host}:{settings.options.statistics.port}/api/v1/statistics/produce', data=data)
-    except Exception as err:
-      print(err)
-
-    return response
-
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix='/api/v1')
 app.openapi = custom_openapi
 
 
@@ -90,12 +67,11 @@ async def custom_http_exception_handler(request, exc):
 async def custom_validation_exception_handler(request, exp):
   return await request_validation_exception_handler(request, exp)
 
-
 if __name__ == '__main__':
   uvicorn.run(
-    "main:app", 
-    host=settings.options.gateway_service.host,
-    port=settings.options.gateway_service.port,
-    log_level=settings.options.gateway_service.log_level,
-    reload=settings.options.gateway_service.reload,
+  "main:app", 
+  host=settings.options.service.host,
+  port=settings.options.service.port,
+  log_level=settings.options.service.log_level,
+  reload=settings.options.service.reload,
   )
