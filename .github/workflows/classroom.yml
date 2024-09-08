@@ -4,7 +4,6 @@ on:
     branches:
       - main
       - dev
-      - feat/#8
   pull_request:
     branches:
       - main
@@ -52,7 +51,3 @@ jobs:
             sudo docker rmi frontend
             sudo docker rmi consumer_service
             sudo docker compose up -d
-
-
-# echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose up -d
-
