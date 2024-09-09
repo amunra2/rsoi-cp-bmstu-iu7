@@ -4,6 +4,8 @@ see : build move
 
 build : report_cvetkov.tex
 	pdflatex -shell-escape report_cvetkov.tex
+	biber report_cvetkov
+	biber report_cvetkov
 	pdflatex -shell-escape report_cvetkov.tex
 	pdflatex -shell-escape report_cvetkov.tex
 
