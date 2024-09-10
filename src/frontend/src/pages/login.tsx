@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthService from "../services/auth-service";
 import InputField from "../components/input-field";
 import Box from '@mui/material/Box';
@@ -34,12 +34,11 @@ export function LoginPage() {
     }
   }; //  border border-red-700
 
-  // useEffect(() => {
-  //   console.log("sdsdsd");
-  //   if (localStorage.getItem(`accessToken`)) {
-  //     navigate("/");
-  //   }
-  // });
+  useEffect(() => {
+    if (AuthService.isAuth()) {
+      navigate("/");
+    }
+  });
 
   return (
     <div className="flex justify-center items-center h-screen bg-my-primary-color">

@@ -109,7 +109,6 @@ export default function ReservationsPage() {
   const [agreed, setAgreed] = React.useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [errorModalMsg, setErrorModalMsg] = useState<string>("");
-  const [reload, setReload] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const [expandAccordions, setExpandAccordions] = useState<number[]>([]);
@@ -131,9 +130,6 @@ export default function ReservationsPage() {
 
   const collapseAll = () => {
     setExpandAccordions([]);
-    const newReload = !reload;
-    setReload(newReload);
-    // console.log(newReload);
   }
 
   const handleOpen = (reservationUuid: string) => {
@@ -203,9 +199,11 @@ export default function ReservationsPage() {
       setBookCondition("BAD");
     } else if (condition === "") {
       setBookCondition("");
-    }else {
+    } else {
       setErrorMsg("Ошибка: Неожиданный тип состояния книги");
     }
+
+    
   }
 
   const changePage = (_: React.ChangeEvent<unknown>, value: number) => {
@@ -216,7 +214,7 @@ export default function ReservationsPage() {
     setAgreed(event.target.checked);
   };
 
-  const handleReturnBook = () => {
+  const handleReturnBook = async () => {
     if (chosenReservationUuid && bookCondition && agreed) {
       const now = dayjs();
 
@@ -235,6 +233,8 @@ export default function ReservationsPage() {
     } else {
       setErrorModalMsg("Ошибка: не все данные заполнены");
     }
+
+    await getReservations();
   }
 
   useEffect(() => {
@@ -243,7 +243,7 @@ export default function ReservationsPage() {
     }
     
     getReservations();
-  }, [currentPage, reservationStatus, reload]);
+  }, [currentPage, reservationStatus]);
 
   return (
     <div
@@ -447,7 +447,7 @@ export default function ReservationsPage() {
                 disabled={!agreed}
                 variant="contained"
                 size="large"
-                onClick={handleReturnBook}
+                onClick={async () => await handleReturnBook()}
               >
                 ПОДТВЕРДИТЬ
               </Button>

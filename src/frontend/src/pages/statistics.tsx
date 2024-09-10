@@ -12,7 +12,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import dayjs, { Dayjs } from 'dayjs';
-import { Chip, ThemeProvider } from '@mui/material';
+import { Alert, Chip, ThemeProvider } from '@mui/material';
 import { MyTheme } from '../theme-mui';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { StatisticsInterface } from '../model/interface/statistics.interface';
@@ -174,6 +174,15 @@ export default function StatisticsPage() {
       className="p-10 mt-5 w-5/6 bg-my-third-color drop-shadow-2xl rounded-md"
     >
       <Text size="large" className="mb-5">Статистика</Text>
+
+      {errorMsg &&
+        <Alert
+          sx={{fontWeight: 1000}}
+          severity="error"
+        >
+          {errorMsg}
+        </Alert>
+      }
 
       <BarChart
         series={[

@@ -41,7 +41,7 @@ export function RegisterPage() {
   }; //  border border-red-700
 
   useEffect(() => {
-    if (localStorage.getItem(`accessToken`)) {
+    if (AuthService.isAuth()) {
       navigate("/");
     }
   });
