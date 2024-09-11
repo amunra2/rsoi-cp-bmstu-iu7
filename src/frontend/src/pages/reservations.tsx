@@ -218,7 +218,7 @@ export default function ReservationsPage() {
     if (chosenReservationUuid && bookCondition && agreed) {
       const now = dayjs();
 
-      const response = GatewayService.returnBook({
+      const response = await GatewayService.returnBook({
         reservationUuid: chosenReservationUuid,
         condition: bookCondition,
         date: now,
